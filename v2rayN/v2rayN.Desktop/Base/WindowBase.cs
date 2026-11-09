@@ -1,4 +1,4 @@
-namespace v2rayN.Desktop.Base;
+﻿namespace v2rayN.Desktop.Base;
 
 public class WindowBase<TViewModel> : ReactiveWindow<TViewModel> where TViewModel : class
 {
@@ -33,8 +33,25 @@ public class WindowBase<TViewModel> : ReactiveWindow<TViewModel> where TViewMode
             var scaling = screen.Scaling > 0 ? screen.Scaling : 1.0;
             var workingArea = screen.WorkingArea;
 
+            // XAML 里声明的设计尺寸（此时 Width/Height 还没被覆盖）
+            var designWidth = Width > 0 ? Width : 0;
+            var designHeight = Height > 0 ? Height : 0;
+
             var width = Math.Min(sizeItem.Width, workingArea.Width / scaling);
             var height = Math.Min(sizeItem.Height, workingArea.Height / scaling);
+
+            // 对话框：不允许小于设计尺寸，避免历史保存值（或某次误缩放）把窗口压得过小
+            if (Owner != null)
+            {
+                if (designWidth > 0 && width < designWidth)
+                {
+                    width = designWidth;
+                }
+                if (designHeight > 0 && height < designHeight)
+                {
+                    height = designHeight;
+                }
+            }
 
             Width = width;
             Height = height;

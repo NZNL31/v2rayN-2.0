@@ -1,4 +1,4 @@
-<Window
+﻿<Window
     x:Class="v2rayN.Desktop.Views.ProfilesSelectWindow"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -9,8 +9,10 @@
     xmlns:resx="clr-namespace:ServiceLib.Resx;assembly=ServiceLib"
     xmlns:vms="clr-namespace:ServiceLib.ViewModels;assembly=ServiceLib"
     Title="{x:Static resx:ResUI.TbSelectProfile}"
-    Width="800"
-    Height="450"
+    Width="920"
+    Height="620"
+    MinWidth="640"
+    MinHeight="420"
     x:DataType="vms:ProfilesSelectViewModel"
     Design.DataContext="{x:Static dd:DesignData.ProfilesSelect}"
     WindowStartupLocation="CenterScreen"
@@ -42,22 +44,30 @@
         <Grid>
             <DockPanel>
                 <!--  Top tools  -->
-                <WrapPanel Margin="{StaticResource Margin4}" DockPanel.Dock="Top">
+                <Grid
+                    Margin="{StaticResource Margin4}"
+                    ColumnDefinitions="*,Auto,Auto"
+                    DockPanel.Dock="Top">
+                    <!--  分组：单行横向滚动，不再换行挤压表格  -->
                     <ListBox
                         x:Name="lstGroup"
+                        Grid.Column="0"
                         Margin="{StaticResource MarginLr4}"
                         DisplayMemberBinding="{Binding Remarks}"
                         ItemsSource="{Binding SubItems}"
+                        ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                        ScrollViewer.VerticalScrollBarVisibility="Disabled"
                         Theme="{DynamicResource ButtonRadioGroupListBox}">
                         <ListBox.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <WrapPanel />
+                                <StackPanel Orientation="Horizontal" />
                             </ItemsPanelTemplate>
                         </ListBox.ItemsPanel>
                     </ListBox>
 
                     <Button
                         x:Name="btnAutofitColumnWidth"
+                        Grid.Column="1"
                         Margin="{StaticResource MarginLr4}"
                         Classes="IconButton Success"
                         ToolTip.Tip="{x:Static resx:ResUI.menuProfileAutofitColumnWidth}">
@@ -68,13 +78,14 @@
 
                     <TextBox
                         x:Name="txtServerFilter"
-                        Width="200"
+                        Grid.Column="2"
+                        Width="240"
                         Margin="{StaticResource MarginLr4}"
                         VerticalContentAlignment="Center"
                         PlaceholderText="{x:Static resx:ResUI.MsgServerTitle}"
                         Text="{Binding ServerFilter, Mode=TwoWay}"
                         ToolTip.Tip="{x:Static resx:ResUI.MsgServerTitle}" />
-                </WrapPanel>
+                </Grid>
 
                 <!--  Profiles grid  -->
                 <DataGrid
@@ -87,6 +98,7 @@
                     HeadersVisibility="All"
                     IsReadOnly="True"
                     ItemsSource="{Binding ProfileItems}"
+                    RowHeight="30"
                     SelectionMode="Single"
                     ShowRowNumbers="True">
                     <DataGrid.KeyBindings>
