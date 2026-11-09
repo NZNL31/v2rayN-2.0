@@ -396,9 +396,29 @@ public partial class ProfilesViewModel : MyReactiveObject
             await SQLiteHelper.Instance.UpdateAllAsync(list);
         }
     }
+    /// <summary>分组汇总：subid -> (节点数, 平均延迟)</summary>
+    public Dictionary<string, (int Count, double AvgDelay)> SubSummaries { get; private set; } = [];
+
+    /// <summary>汇总算好后、替换列表前触发，视图侧在这里把数据交给左栏</summary>
+    public Action<Dictionary<string, (int Count, double AvgDelay)>>? SubSummariesReady { get; set; }
+
     public async Task RefreshSubscriptions()
     {
         var subItems = await AppManager.Instance.SubItems();
+
+        try
+        {
+            var summaries = await AppManager.Instance.SubSummaries();
+            SubSummaries = summaries
+                .Where(t => t.SubId.IsNotEmpty())
+                .ToDictionary(t => t.SubId!, t => (t.Cnt, t.AvgDelay));
+        }
+        catch (Exception ex)
+        {
+            Logging.SaveLog("RefreshSubscriptions", ex);
+        }
+
+        SubSummariesReady?.Invoke(SubSummaries);
         subItems.Insert(0, new SubItem { Remarks = ResUI.AllGroupServers });
 
 

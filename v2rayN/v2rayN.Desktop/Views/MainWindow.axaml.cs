@@ -93,6 +93,8 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
 
             this.OneWayBind(ViewModel, vm => vm.StatusBarViewModel, v => v.contentStatusBarView.Content).DisposeWith(disposables);
 
+
+
             var layoutBindings = new SingleReplaceableDisposable().DisposeWith(disposables);
             this.WhenAnyValue(v => v.ViewModel.MainGirdOrientation)
                 .ObserveOn(RxSchedulers.MainThreadScheduler)
@@ -172,6 +174,7 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
         AddHelpMenuItem();
         Global.BootMark("MainWindow ctor done");
     }
+
 
     #region Event
 

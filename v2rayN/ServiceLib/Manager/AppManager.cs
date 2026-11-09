@@ -251,6 +251,19 @@ public sealed class AppManager
         return await SQLiteHelper.Instance.QueryAsync<ProfileItemModel>(sql);
     }
 
+    /// <summary>每个订阅分组的节点数与平均延迟（左栏汇总用，一次查询）</summary>
+    public async Task<List<SubSummaryDto>> SubSummaries()
+    {
+        var sql = @"select a.subid as SubId
+                          ,count(*) as Cnt
+                          ,coalesce(avg(case when e.delay > 0 then e.delay end), 0) as AvgDelay
+                    from ProfileItem a
+                    left join ProfileExItem e on a.IndexId = e.IndexId
+                    group by a.subid";
+
+        var lst = await SQLiteHelper.Instance.QueryAsync<SubSummaryDto>(sql);
+        return lst ?? [];
+    }
     public async Task<ProfileItem?> GetProfileItem(string indexId)
     {
         if (indexId.IsNullOrEmpty())

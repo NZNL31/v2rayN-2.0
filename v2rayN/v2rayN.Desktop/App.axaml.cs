@@ -30,6 +30,9 @@ public partial class App : Application
 
             Global.BootMark("before new MainWindowViewModel");
             var mainWindowViewModel = new MainWindowViewModel();
+            mainWindowViewModel.ProfilesViewModel.SubSummariesReady = summaries =>
+                v2rayN.Desktop.Converters.GroupSummaryConverter.Update(
+                    summaries.Select(t => (t.Key, t.Value.Count, t.Value.AvgDelay)));
             Global.BootMark("after new MainWindowViewModel");
             var mainWindow = (MainWindow)viewLocator.Build(mainWindowViewModel);
             mainWindow.ViewModel = mainWindowViewModel;
