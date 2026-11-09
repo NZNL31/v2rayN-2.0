@@ -29,31 +29,23 @@
             <!--  Docker 风格顶栏：整条蓝底 + 白色文字菜单  -->
             <Border
                 x:Name="appHeader"
-                Height="64"
+                Height="52"
                 Background="{DynamicResource AppSidebarBg}"
                 DockPanel.Dock="Top"
                 PointerPressed="Header_PointerPressed">
                 <Grid Margin="20,0,0,0" ColumnDefinitions="Auto,*,Auto,Auto,Auto">
 
-                    <!--  Logo 文字（无图标）：主名与版本号左对齐堆叠  -->
-                    <StackPanel
+                    <!--  Logo：只显示主名，版本号悬停才显示（tooltip 由代码写入）  -->
+                    <TextBlock
+                        x:Name="txtAppLogo"
                         Grid.Column="0"
                         VerticalAlignment="Center"
-                        Spacing="1">
-                        <TextBlock
-                            FontFamily="Segoe Script, Segoe UI, Microsoft YaHei UI"
-                            FontSize="22"
-                            FontWeight="Bold"
-                            Foreground="{DynamicResource AppTextPrimary}"
-                            LetterSpacing="0"
-                            Text="v2rayN" />
-                        <TextBlock
-                            x:Name="txtAppVersion"
-                            FontSize="10"
-                            Foreground="{DynamicResource AppTextSecondary}"
-                            LetterSpacing="0.6"
-                            Text="2.0.0" />
-                    </StackPanel>
+                        FontFamily="Segoe Script, Segoe UI, Microsoft YaHei UI"
+                        FontSize="22"
+                        FontWeight="Bold"
+                        Foreground="{DynamicResource AppTextPrimary}"
+                        LetterSpacing="0"
+                        Text="v2rayN" />
 
                     <Button
                         x:Name="btnNewUpdate"

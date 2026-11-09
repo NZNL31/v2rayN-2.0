@@ -28,7 +28,9 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
         InitializeComponent();
 
         _config = AppManager.Instance.Config;
-        txtAppVersion.Text = Utils.GetVersionInfo();
+        // 版本号不再占用顶栏：悬停 logo 时以 tooltip 显示
+        var appVersion = Utils.GetVersionInfo();
+        ToolTip.SetTip(txtAppLogo, $"v2rayN {appVersion}");
         _manager = new WindowNotificationManager(TopLevel.GetTopLevel(this)) { MaxItems = 3, Position = NotificationPosition.TopRight };
 
         KeyDown += MainWindow_KeyDown;
