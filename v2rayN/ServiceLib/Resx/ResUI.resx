@@ -1968,4 +1968,13 @@ The "Get Certificate" action may fail if a self-signed certificate is used or if
   <data name="TipSpeedRate" xml:space="preserve">
     <value>Live upload / download rate</value>
   </data>
+  <data name="SummaryServers" xml:space="preserve">
+    <value>{0} servers</value>
+  </data>
+  <data name="SummaryTested" xml:space="preserve">
+    <value>tested {0}</value>
+  </data>
+  <data name="SummaryAvgDelay" xml:space="preserve">
+    <value>avg {0} ms</value>
+  </data>
 </root>

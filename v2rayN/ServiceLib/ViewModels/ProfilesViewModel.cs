@@ -389,6 +389,7 @@ public partial class ProfilesViewModel : MyReactiveObject
         }
 
         BuildDisplayItems();
+        UpdateGroupSummary();
 
         await DispatcherRefreshServersBizInteraction.HandleSafe(RxVoid.Default);
     }
@@ -445,6 +446,30 @@ public partial class ProfilesViewModel : MyReactiveObject
         }
     }
 
+    /// <summary>
+    /// 当前视图的汇总：节点数 / 已测数 / 平均延迟。
+    /// 注意 delay 是「最后一次测速」的结果（可能是 tcping 也可能是真连接），
+    /// 所以把已测样本数一起显示，避免把平均值当成统一口径。
+    /// </summary>
+    private void UpdateGroupSummary()
+    {
+        try
+        {
+            var total = ProfileItems.Count;
+            var tested = ProfileItems.Where(t => t.Delay > 0).Select(t => (double)t.Delay).ToList();
+            var text = string.Format(ResUI.SummaryServers, total);
+            if (tested.Count > 0)
+            {
+                text += $" · {string.Format(ResUI.SummaryTested, tested.Count)} · {string.Format(ResUI.SummaryAvgDelay, tested.Average().ToString("F0"))}";
+            }
+            GroupSummaryText = text;
+        }
+        catch (Exception ex)
+        {
+            Logging.SaveLog("UpdateGroupSummary", ex);
+        }
+    }
+
     /// <summary>折叠 / 展开某个分组</summary>
     public void ToggleGroup(string subid)
     {
@@ -471,29 +496,15 @@ public partial class ProfilesViewModel : MyReactiveObject
             await SQLiteHelper.Instance.UpdateAllAsync(list);
         }
     }
-    /// <summary>分组汇总：subid -> (节点数, 平均延迟)</summary>
-    public Dictionary<string, (int Count, double AvgDelay)> SubSummaries { get; private set; } = [];
-
-    /// <summary>汇总算好后、替换列表前触发，视图侧在这里把数据交给左栏</summary>
-    public Action<Dictionary<string, (int Count, double AvgDelay)>>? SubSummariesReady { get; set; }
+    /// <summary>工具栏右侧的当前视图汇总：节点数 · 已测数 · 平均延迟</summary>
+    [Reactive]
+    public partial string GroupSummaryText { get; set; }
 
     public async Task RefreshSubscriptions()
     {
         var subItems = await AppManager.Instance.SubItems();
 
-        try
-        {
-            var summaries = await AppManager.Instance.SubSummaries();
-            SubSummaries = summaries
-                .Where(t => t.SubId.IsNotEmpty())
-                .ToDictionary(t => t.SubId!, t => (t.Cnt, t.AvgDelay));
-        }
-        catch (Exception ex)
-        {
-            Logging.SaveLog("RefreshSubscriptions", ex);
-        }
 
-        SubSummariesReady?.Invoke(SubSummaries);
         subItems.Insert(0, new SubItem { Remarks = ResUI.AllGroupServers });
 
 

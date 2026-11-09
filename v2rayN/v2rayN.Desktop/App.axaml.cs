@@ -27,9 +27,7 @@ public partial class App : Application
             }
 
             var mainWindowViewModel = new MainWindowViewModel();
-            mainWindowViewModel.ProfilesViewModel.SubSummariesReady = summaries =>
-                v2rayN.Desktop.Converters.GroupSummaryConverter.Update(
-                    summaries.Select(t => (t.Key, t.Value.Count, t.Value.AvgDelay)));
+
             var mainWindow = (MainWindow)viewLocator.Build(mainWindowViewModel);
             mainWindow.ViewModel = mainWindowViewModel;
             desktop.MainWindow = mainWindow;

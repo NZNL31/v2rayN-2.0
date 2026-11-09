@@ -99,7 +99,8 @@
     <Grid>
             <!--  右侧内容区  -->
             <DockPanel Margin="0,10,18,14">
-                <WrapPanel Margin="0,0,0,10" DockPanel.Dock="Top">
+                <Grid Margin="0,0,0,10" ColumnDefinitions="*,Auto" DockPanel.Dock="Top">
+                    <WrapPanel Grid.Column="0">
                     <Grid Margin="0,0,6,0" VerticalAlignment="Center">
                         <TextBox
                             x:Name="txtServerFilter"
@@ -196,7 +197,18 @@
                                 StrokeThickness="1.5" />
                         </Button.Content>
                     </Button>
-                </WrapPanel>
+                    </WrapPanel>
+
+                    <!--  当前视图汇总：节点数 · 已测 · 平均延迟  -->
+                    <TextBlock
+                        Grid.Column="1"
+                        Margin="12,0,4,0"
+                        VerticalAlignment="Center"
+                        FontSize="11.5"
+                        Foreground="{DynamicResource AppTextSecondary}"
+                        Text="{Binding GroupSummaryText}"
+                        TextTrimming="CharacterEllipsis" />
+                </Grid>
 
                 <Border
                     Background="{DynamicResource AppCardBg}"

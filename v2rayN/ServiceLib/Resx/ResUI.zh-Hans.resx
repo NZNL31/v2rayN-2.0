@@ -1960,4 +1960,13 @@
   <data name="TipSpeedRate" xml:space="preserve">
     <value>实时上行 / 下行速率</value>
   </data>
+  <data name="SummaryServers" xml:space="preserve">
+    <value>{0} 个节点</value>
+  </data>
+  <data name="SummaryTested" xml:space="preserve">
+    <value>已测 {0}</value>
+  </data>
+  <data name="SummaryAvgDelay" xml:space="preserve">
+    <value>平均 {0} ms</value>
+  </data>
 </root>

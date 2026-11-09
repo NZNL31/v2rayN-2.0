@@ -5593,5 +5593,30 @@ namespace ServiceLib.Resx {
                 return ResourceManager.GetString("TipSpeedRate", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   查找类似 {0} servers 的本地化字符串。
+        /// </summary>
+        public static string SummaryServers {
+            get {
+                return ResourceManager.GetString("SummaryServers", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   查找类似 tested {0} 的本地化字符串。
+        /// </summary>
+        public static string SummaryTested {
+            get {
+                return ResourceManager.GetString("SummaryTested", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   查找类似 avg {0} ms 的本地化字符串。
+        /// </summary>
+        public static string SummaryAvgDelay {
+            get {
+                return ResourceManager.GetString("SummaryAvgDelay", resourceCulture);
+            }
+        }
     }
 }
