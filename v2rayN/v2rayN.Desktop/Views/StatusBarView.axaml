@@ -129,7 +129,7 @@
                 Margin="12,0,0,0"
                 VerticalAlignment="Center"
                 DockPanel.Dock="Left"
-                ToolTip.Tip="实时上行 / 下行速率"
+                ToolTip.Tip="{x:Static resx:ResUI.TipSpeedRate}"
                 FontSize="11.5"
                 Foreground="{DynamicResource AppTextSecondary}"
                 IsVisible="{Binding SpeedCompactDisplay, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"

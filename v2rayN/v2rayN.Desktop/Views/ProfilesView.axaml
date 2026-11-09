@@ -105,8 +105,8 @@
                             Padding="8,0,26,0"
                             VerticalContentAlignment="Center"
                             CornerRadius="7"
-                            PlaceholderText="搜索别名 / 地址"
-                            ToolTip.Tip="输入即过滤（Ctrl+F 聚焦）" />
+                            PlaceholderText="{x:Static resx:ResUI.TipSearchServer}"
+                            ToolTip.Tip="{x:Static resx:ResUI.TipSearchServerHint}" />
                         <Button
                             x:Name="btnClearFilter"
                             Width="18"
@@ -117,7 +117,7 @@
                             Click="BtnClearFilter_Click"
                             IsVisible="False"
                             Theme="{DynamicResource HeaderIconButton}"
-                            ToolTip.Tip="清除过滤">
+                            ToolTip.Tip="{x:Static resx:ResUI.TipClearFilter}">
                             <Path
                                 Width="8"
                                 Height="8"
@@ -181,7 +181,7 @@
                         Margin="{StaticResource MarginLr4}"
                         Classes="IconButton Success"
                         Click="BtnSubUpdateTop_Click"
-                        ToolTip.Tip="更新当前订阅（先直连，失败再走代理）">
+                        ToolTip.Tip="{x:Static resx:ResUI.TipUpdateSubDirectFirst}">
                         <Button.Content>
                             <Path
                                 Width="17"
@@ -542,7 +542,7 @@
                     Foreground="{DynamicResource AppTextSecondary}"
                     IsHitTestVisible="False"
                     IsVisible="False"
-                    Text="暂无节点" />
+                    Text="{x:Static resx:ResUI.TipNoServer}" />
             </Grid>
                 </Border>
             </DockPanel>

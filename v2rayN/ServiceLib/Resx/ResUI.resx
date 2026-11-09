@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -1925,5 +1925,47 @@ The "Get Certificate" action may fail if a self-signed certificate is used or if
   </data>
   <data name="LvPreResolve" xml:space="preserve">
     <value>Pre-resolve server domains</value>
+  </data>
+  <data name="TipSearchServer" xml:space="preserve">
+    <value>Search remarks / address</value>
+  </data>
+  <data name="TipSearchServerHint" xml:space="preserve">
+    <value>Filters as you type (Ctrl+F)</value>
+  </data>
+  <data name="TipClearFilter" xml:space="preserve">
+    <value>Clear filter</value>
+  </data>
+  <data name="TipUpdateSubDirectFirst" xml:space="preserve">
+    <value>Update this subscription (direct first, proxy on failure)</value>
+  </data>
+  <data name="TipNoServer" xml:space="preserve">
+    <value>No servers</value>
+  </data>
+  <data name="TipLoadingServers" xml:space="preserve">
+    <value>Loading servers...</value>
+  </data>
+  <data name="TipEmptyServers" xml:space="preserve">
+    <value>No servers yet. Use 'Servers' on the left to add or update a subscription.</value>
+  </data>
+  <data name="TipEmptySearch" xml:space="preserve">
+    <value>No matching servers</value>
+  </data>
+  <data name="TipToggleSidePanel" xml:space="preserve">
+    <value>Show / hide side panel</value>
+  </data>
+  <data name="TipWindowMin" xml:space="preserve">
+    <value>Minimize</value>
+  </data>
+  <data name="TipWindowMax" xml:space="preserve">
+    <value>Maximize</value>
+  </data>
+  <data name="TipWindowClose" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="TipToggleInfoPanel" xml:space="preserve">
+    <value>Collapse / expand info panel</value>
+  </data>
+  <data name="TipSpeedRate" xml:space="preserve">
+    <value>Live upload / download rate</value>
   </data>
 </root>

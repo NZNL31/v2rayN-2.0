@@ -5480,5 +5480,118 @@ namespace ServiceLib.Resx {
                 return ResourceManager.GetString("UpgradeAppNotExistTip", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   查找类似 Search remarks / address 的本地化字符串。
+        /// </summary>
+        public static string TipSearchServer {
+            get {
+                return ResourceManager.GetString("TipSearchServer", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   查找类似 Filters as you type (Ctrl+F) 的本地化字符串。
+        /// </summary>
+        public static string TipSearchServerHint {
+            get {
+                return ResourceManager.GetString("TipSearchServerHint", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   查找类似 Clear filter 的本地化字符串。
+        /// </summary>
+        public static string TipClearFilter {
+            get {
+                return ResourceManager.GetString("TipClearFilter", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   查找类似 Update this subscription (direct first, proxy on failure) 的本地化字符串。
+        /// </summary>
+        public static string TipUpdateSubDirectFirst {
+            get {
+                return ResourceManager.GetString("TipUpdateSubDirectFirst", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   查找类似 No servers 的本地化字符串。
+        /// </summary>
+        public static string TipNoServer {
+            get {
+                return ResourceManager.GetString("TipNoServer", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   查找类似 Loading servers... 的本地化字符串。
+        /// </summary>
+        public static string TipLoadingServers {
+            get {
+                return ResourceManager.GetString("TipLoadingServers", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   查找类似 No servers yet. Use 'Servers' on the left to add or update a subscription. 的本地化字符串。
+        /// </summary>
+        public static string TipEmptyServers {
+            get {
+                return ResourceManager.GetString("TipEmptyServers", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   查找类似 No matching servers 的本地化字符串。
+        /// </summary>
+        public static string TipEmptySearch {
+            get {
+                return ResourceManager.GetString("TipEmptySearch", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   查找类似 Show / hide side panel 的本地化字符串。
+        /// </summary>
+        public static string TipToggleSidePanel {
+            get {
+                return ResourceManager.GetString("TipToggleSidePanel", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   查找类似 Minimize 的本地化字符串。
+        /// </summary>
+        public static string TipWindowMin {
+            get {
+                return ResourceManager.GetString("TipWindowMin", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   查找类似 Maximize 的本地化字符串。
+        /// </summary>
+        public static string TipWindowMax {
+            get {
+                return ResourceManager.GetString("TipWindowMax", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   查找类似 Close 的本地化字符串。
+        /// </summary>
+        public static string TipWindowClose {
+            get {
+                return ResourceManager.GetString("TipWindowClose", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   查找类似 Collapse / expand info panel 的本地化字符串。
+        /// </summary>
+        public static string TipToggleInfoPanel {
+            get {
+                return ResourceManager.GetString("TipToggleInfoPanel", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   查找类似 Live upload / download rate 的本地化字符串。
+        /// </summary>
+        public static string TipSpeedRate {
+            get {
+                return ResourceManager.GetString("TipSpeedRate", resourceCulture);
+            }
+        }
     }
 }

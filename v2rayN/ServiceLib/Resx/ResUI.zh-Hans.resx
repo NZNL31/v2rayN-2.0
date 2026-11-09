@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -1917,5 +1917,47 @@
   </data>
   <data name="LvPreResolve" xml:space="preserve">
     <value>预解析节点域名</value>
+  </data>
+  <data name="TipSearchServer" xml:space="preserve">
+    <value>搜索别名 / 地址</value>
+  </data>
+  <data name="TipSearchServerHint" xml:space="preserve">
+    <value>输入即过滤（Ctrl+F 聚焦）</value>
+  </data>
+  <data name="TipClearFilter" xml:space="preserve">
+    <value>清除过滤</value>
+  </data>
+  <data name="TipUpdateSubDirectFirst" xml:space="preserve">
+    <value>更新当前订阅（先直连，失败再走代理）</value>
+  </data>
+  <data name="TipNoServer" xml:space="preserve">
+    <value>暂无节点</value>
+  </data>
+  <data name="TipLoadingServers" xml:space="preserve">
+    <value>正在加载节点…</value>
+  </data>
+  <data name="TipEmptyServers" xml:space="preserve">
+    <value>暂无节点，点左上角「配置项」添加或更新订阅</value>
+  </data>
+  <data name="TipEmptySearch" xml:space="preserve">
+    <value>没有匹配的节点</value>
+  </data>
+  <data name="TipToggleSidePanel" xml:space="preserve">
+    <value>显示 / 隐藏右侧面板</value>
+  </data>
+  <data name="TipWindowMin" xml:space="preserve">
+    <value>最小化</value>
+  </data>
+  <data name="TipWindowMax" xml:space="preserve">
+    <value>最大化</value>
+  </data>
+  <data name="TipWindowClose" xml:space="preserve">
+    <value>关闭</value>
+  </data>
+  <data name="TipToggleInfoPanel" xml:space="preserve">
+    <value>折叠 / 展开信息面板</value>
+  </data>
+  <data name="TipSpeedRate" xml:space="preserve">
+    <value>实时上行 / 下行速率</value>
   </data>
 </root>

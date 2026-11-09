@@ -164,7 +164,7 @@ public partial class ProfilesView : ReactiveUserControl<ProfilesViewModel>
         RestoreUI();
 
         // 首帧先给个“加载中”，等 RefreshServersBiz 回来后 UpdateEmptyState 会替换掉
-        txtEmptyState.Text = "正在加载节点…";
+        txtEmptyState.Text = ResUI.TipLoadingServers;
         txtEmptyState.IsVisible = true;
 
         // 窄屏自动隐藏低优先级列，宽屏再放回来；拖窗口时防抖，避免每帧重算
@@ -374,8 +374,8 @@ public partial class ProfilesView : ReactiveUserControl<ProfilesViewModel>
             var count = lstProfiles?.ItemsSource?.Cast<object>().Count() ?? 0;
             txtEmptyState.IsVisible = count == 0;
             txtEmptyState.Text = txtServerFilter.Text.IsNullOrEmpty()
-                ? "暂无节点，点左上角「配置项」添加或更新订阅"
-                : "没有匹配的节点";
+                ? ResUI.TipEmptyServers
+                : ResUI.TipEmptySearch;
         }
         catch (Exception ex)
         {
