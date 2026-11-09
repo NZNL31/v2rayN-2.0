@@ -38,12 +38,6 @@ irm https://raw.githubusercontent.com/NZNL31/v2rayN-2.0/main/install.ps1 | iex
 
 > 打不开 `raw.githubusercontent.com` 时，把地址换成 `https://cdn.jsdelivr.net/gh/NZNL31/v2rayN-2.0@main/install.ps1`。
 
-**装完之后三步**
-
-1. 双击 `v2rayN.exe`
-   （首次运行若弹「Windows 已保护你的电脑」，点 **更多信息 → 仍要运行**）
-2. 复制订阅链接，回程序按 `Ctrl+V` 导入
-3. 选一个节点，状态栏系统代理选「**自动配置系统代理**」
 
 **其它方式**
 
