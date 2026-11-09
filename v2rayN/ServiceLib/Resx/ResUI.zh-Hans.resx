@@ -1972,4 +1972,7 @@
   <data name="RailSubUpdate" xml:space="preserve">
     <value>更新此订阅</value>
   </data>
+  <data name="RailSubUpdateAll" xml:space="preserve">
+    <value>更新所有订阅</value>
+  </data>
 </root>

@@ -5627,5 +5627,14 @@ namespace ServiceLib.Resx {
                 return ResourceManager.GetString("RailSubUpdate", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   查找类似 Update all subscriptions 的本地化字符串。
+        /// </summary>
+        public static string RailSubUpdateAll {
+            get {
+                return ResourceManager.GetString("RailSubUpdateAll", resourceCulture);
+            }
+        }
     }
 }

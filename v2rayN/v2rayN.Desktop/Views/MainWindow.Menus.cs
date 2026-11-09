@@ -256,6 +256,25 @@ public partial class MainWindow
 
         _railSelectedBefore = null;
     }
+    /// <summary>左栏右键「所有」：更新全部订阅（直连优先，失败转代理）</summary>
+    private async void RailSubMenuUpdateAll_Click(object? sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var ok = await ViewModel.UpdateSubscriptionProcess(string.Empty, false);
+            if (!ok)
+            {
+                await ViewModel.UpdateSubscriptionProcess(string.Empty, true);
+            }
+
+            await ViewModel.ProfilesViewModel.RefreshSubscriptions();
+        }
+        catch (Exception ex)
+        {
+            Logging.SaveLog("RailSubMenu", ex);
+        }
+    }
+
     /// <summary>左栏右键：编辑这个订阅</summary>
     private async void RailSubMenuEdit_Click(object? sender, RoutedEventArgs e)
     {

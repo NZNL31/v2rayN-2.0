@@ -1980,4 +1980,7 @@ The "Get Certificate" action may fail if a self-signed certificate is used or if
   <data name="RailSubUpdate" xml:space="preserve">
     <value>Update this subscription</value>
   </data>
+  <data name="RailSubUpdateAll" xml:space="preserve">
+    <value>Update all subscriptions</value>
+  </data>
 </root>

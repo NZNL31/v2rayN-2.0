@@ -298,9 +298,24 @@
                                 <Border Background="Transparent">
                                     <Border.ContextMenu>
                                         <ContextMenu>
-                                            <MenuItem Click="RailSubMenuEdit_Click" Header="{x:Static resx:ResUI.menuSubEdit}" />
-                                            <MenuItem Click="RailSubMenuUpdate_Click" Header="{x:Static resx:ResUI.RailSubUpdate}" />
-                                            <MenuItem Click="RailSubMenuDelete_Click" Header="{x:Static resx:ResUI.menuSubDelete}" />
+                                            <!--  具体订阅：编辑 / 更新此订阅 / 删除  -->
+                                            <MenuItem
+                                                Click="RailSubMenuEdit_Click"
+                                                Header="{x:Static resx:ResUI.menuSubEdit}"
+                                                IsVisible="{Binding Id, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                                            <MenuItem
+                                                Click="RailSubMenuUpdate_Click"
+                                                Header="{x:Static resx:ResUI.RailSubUpdate}"
+                                                IsVisible="{Binding Id, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                                            <MenuItem
+                                                Click="RailSubMenuDelete_Click"
+                                                Header="{x:Static resx:ResUI.menuSubDelete}"
+                                                IsVisible="{Binding Id, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                                            <!--  「所有」：只能整体更新  -->
+                                            <MenuItem
+                                                Click="RailSubMenuUpdateAll_Click"
+                                                Header="{x:Static resx:ResUI.RailSubUpdateAll}"
+                                                IsVisible="{Binding Id, Converter={x:Static StringConverters.IsNullOrEmpty}}" />
                                         </ContextMenu>
                                     </Border.ContextMenu>
                                     <TextBlock Text="{Binding Remarks}" TextTrimming="CharacterEllipsis" />
