@@ -18,6 +18,7 @@
     <UserControl.Resources>
         <conv:DelayColorConverter x:Key="DelayColorConverter" />
     <conv:PositiveToBoolConverter x:Key="PositiveToBool" />
+        <conv:RegionConverter x:Key="Region" />
 
         <!--  左侧导航项：圆角胶囊 + 选中浅蓝底  -->
         <ControlTheme x:Key="NavItemTheme" TargetType="ListBoxItem">
@@ -354,12 +355,21 @@
                             <DataTemplate>
                                 <!--  用 Grid 约束文本宽度，避免长别名把星号列撑开  -->
                                 <Grid Margin="{StaticResource MarginLr8}" ColumnDefinitions="Auto,*">
-                                    <Label
-                                        Margin="{StaticResource MarginLr4}"
-                                        Classes="Solid Red"
-                                        Content="{x:Static resx:ResUI.TipActiveServer}"
-                                        IsVisible="{Binding IsActive}"
-                                        Theme="{DynamicResource TagLabel}" />
+                                    <StackPanel
+                                        VerticalAlignment="Center"
+                                        Orientation="Horizontal"
+                                        Spacing="6">
+                                        <Label
+                                            Margin="{StaticResource MarginLr4}"
+                                            Classes="Solid Red"
+                                            Content="{x:Static resx:ResUI.TipActiveServer}"
+                                            IsVisible="{Binding IsActive}"
+                                            Theme="{DynamicResource TagLabel}" />
+                                        <!--  地区徽章：从别名推断 HK / US / JP …  -->
+                                        <Border Classes="RegionBadge" IsVisible="{Binding Remarks, Converter={StaticResource Region}, ConverterParameter=bool}">
+                                            <TextBlock Text="{Binding Remarks, Converter={StaticResource Region}}" />
+                                        </Border>
+                                    </StackPanel>
                                     <TextBlock Grid.Column="1" Classes.active="{Binding IsActive}" VerticalAlignment="Center" Text="{Binding Remarks}"
                                         TextTrimming="CharacterEllipsis" />
                                 </Grid>

@@ -205,4 +205,17 @@
     <Style Selector="DataGridRow:selected">
         <Setter Property="Background" Value="{DynamicResource AppNavSelected}" />
     </Style>
+    <!--  地区徽章（表格别名列）：单色小胶囊  -->
+    <Style Selector="Border.RegionBadge">
+        <Setter Property="Background" Value="{DynamicResource AppBadgeBg}" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="Padding" Value="4,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Border.RegionBadge > TextBlock">
+        <Setter Property="FontSize" Value="10.5" />
+        <Setter Property="Foreground" Value="{DynamicResource AppTextSecondary}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
 </Styles>
