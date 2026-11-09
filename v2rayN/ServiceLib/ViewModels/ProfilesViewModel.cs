@@ -1,4 +1,4 @@
-namespace ServiceLib.ViewModels;
+﻿namespace ServiceLib.ViewModels;
 
 public partial class ProfilesViewModel : MyReactiveObject
 {
@@ -362,7 +362,9 @@ public partial class ProfilesViewModel : MyReactiveObject
     {
         var lstModel = await GetProfileItemsEx(_config.SubIndexId, _serverFilter);
 
+        Global.BootMark("PS: before ReplaceRange");
         ProfileItems.ReplaceRange(lstModel ?? []);
+        Global.BootMark("PS: after ReplaceRange");
         if (lstModel?.Count > 0)
         {
             ProfileItemModel? selected = null;
@@ -414,12 +416,16 @@ public partial class ProfilesViewModel : MyReactiveObject
 
     private async Task<List<ProfileItemModel>?> GetProfileItemsEx(string subid, string filter)
     {
+        Global.BootMark("PS: before ProfileModels");
         var lstModel = await AppManager.Instance.ProfileModels(_config.SubIndexId, filter);
+        Global.BootMark("PS: after ProfileModels");
 
         await ConfigHandler.SetDefaultServer(_config, lstModel);
+        Global.BootMark("PS: after SetDefaultServer");
 
         var lstServerStat = (_config.GuiItem.EnableStatistics ? StatisticsManager.Instance.ServerStat : null) ?? [];
         var lstProfileExs = await ProfileExManager.Instance.GetProfileExs();
+        Global.BootMark("PS: after GetProfileExs");
         lstModel = (from t in lstModel
                     join t2 in lstServerStat on t.IndexId equals t2.IndexId into t2b
                     from t22 in t2b.DefaultIfEmpty()

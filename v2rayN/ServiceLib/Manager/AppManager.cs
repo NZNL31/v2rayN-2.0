@@ -91,6 +91,25 @@ public sealed class AppManager
         SQLiteHelper.Instance.CreateTable<ProfileExItem>();
         SQLiteHelper.Instance.CreateTable<DNSItem>();
         SQLiteHelper.Instance.CreateTable<FullConfigTemplateItem>();
+
+        // 预热：SQLite 原生库 + EF 模型的首次初始化要 1.4s 左右，
+        // 放在后台线程里做，等窗口出来时查询已经是热的（首次列表不再卡）
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                Global.BootMark("warmup start");
+                // 与 ProfileModels 完全同构的查询（含 SubItem 关联），把两个模型都预热掉
+                await SQLiteHelper.Instance.QueryAsync<ProfileItemModel>(
+                    @"select a.IndexId, a.ConfigType, a.Remarks, a.Address, a.Port, a.Network, a.StreamSecurity, a.Subid, b.remarks as subRemarks
+                      from ProfileItem a left join SubItem b on a.subid = b.id limit 1");
+                Global.BootMark("warmup done");
+            }
+            catch (Exception ex)
+            {
+                Logging.SaveLog("sqlite warmup", ex);
+            }
+        });
 #pragma warning disable CS0618
         SQLiteHelper.Instance.CreateTable<ProfileGroupItem>();
 #pragma warning restore CS0618
