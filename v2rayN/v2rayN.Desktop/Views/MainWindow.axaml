@@ -20,6 +20,7 @@
     WindowStartupLocation="CenterScreen"
     Background="{DynamicResource AppPageBg}"
     SystemDecorations="None"
+    TransparencyLevelHint="None"
     mc:Ignorable="d">
 
     <Grid>

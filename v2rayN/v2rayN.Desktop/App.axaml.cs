@@ -30,6 +30,26 @@ public partial class App : Application
 
             var mainWindow = (MainWindow)viewLocator.Build(mainWindowViewModel);
             mainWindow.ViewModel = mainWindowViewModel;
+
+            // 首帧前先给窗口铺一层不透明底色：否则主题资源尚未解析时窗口是透明的，
+            // 启动瞬间会透出后面的桌面/浏览器窗口（表现为“先闪出别的内容”）
+            try
+            {
+                mainWindow.TransparencyLevelHint = new[] { WindowTransparencyLevel.None };
+                if (mainWindow.FindResource("AppPageBg") is IBrush bg)
+                {
+                    mainWindow.Background = bg;
+                }
+                else
+                {
+                    mainWindow.Background = new SolidColorBrush(Color.Parse("#F5F7FA"));
+                }
+            }
+            catch (Exception ex)
+            {
+                Logging.SaveLog("Startup background", ex);
+            }
+
             desktop.MainWindow = mainWindow;
 
             if (OperatingSystem.IsMacOS())
