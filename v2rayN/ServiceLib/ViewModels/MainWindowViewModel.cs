@@ -336,7 +336,12 @@ public partial class MainWindowViewModel : MyReactiveObject
 
     private async Task Init()
     {
+        Global.BootMark("VM.Init start");
         AppManager.Instance.ShowInTaskbar = true;
+
+        // 先把 UI 线程让出来，让主窗口完成首帧渲染，再继续初始化（否则窗口会白屏几秒）
+        await Task.Yield();
+        Global.BootMark("VM.Init yielded");
 
         if (DesignMode)
         {
@@ -349,13 +354,18 @@ public partial class MainWindowViewModel : MyReactiveObject
         await ProfileExManager.Instance.Init();
         await CoreManager.Instance.Init(_config, UpdateHandler);
         await CertPemManager.Instance.Init(_config);
+        Global.BootMark("VM.Init before RegUpdateTask");
         TaskManager.Instance.RegUpdateTask(_config, UpdateTaskHandler);
+        Global.BootMark("VM.Init after RegUpdateTask");
 
         // 总是初始化：状态栏的实时速率需要它（关闭统计时不会写数据库）
         await StatisticsManager.Instance.Init(_config, UpdateStatisticsHandler);
+        Global.BootMark("VM.Init before RefreshServers");
         await RefreshServersDispatcherAsync();
+        Global.BootMark("VM.Init after RefreshServers");
 
         await Reload();
+        Global.BootMark("VM.Init after Reload");
     }
 
     #endregion Init

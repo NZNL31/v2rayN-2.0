@@ -1,4 +1,4 @@
-using v2rayN.Desktop.Common;
+﻿using v2rayN.Desktop.Common;
 using v2rayN.Desktop.Manager;
 
 namespace v2rayN.Desktop;
@@ -45,12 +45,14 @@ internal class Program
             }
         }
 
+        Global.BootMark("before InitApp");
         if (!AppManager.Instance.InitApp())
         {
             return false;
         }
 
         AppManager.Instance.WindowDialog = new WindowDialog();
+        Global.BootMark("after InitApp");
         return true;
     }
 

@@ -47,7 +47,7 @@
             <SolidColorBrush x:Key="AppTextSecondary" Color="#98A2B3" />
             <SolidColorBrush x:Key="AppNavHover" Color="#262B33" />
             <SolidColorBrush x:Key="AppHeaderHover" Color="#2E343D" />
-            <SolidColorBrush x:Key="AppNavSelected" Color="#1E3561" />
+            <SolidColorBrush x:Key="AppNavSelected" Color="#2C333D" />
             <SolidColorBrush x:Key="AppRowHover" Color="#232830" />
             <SolidColorBrush x:Key="AppRowAltBg" Color="#191C21" />
             <SolidColorBrush x:Key="AppBadgeBg" Color="#2A3039" />

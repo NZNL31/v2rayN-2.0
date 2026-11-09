@@ -69,11 +69,6 @@ public sealed class AppManager
 
         Logging.Setup();
 
-        // 定制版：清掉以前下载的升级器，避免被误运行后覆盖定制 exe
-        if (Global.DisableSelfUpdate)
-        {
-            TryRemoveUpgradeApp();
-        }
 
         var config = ConfigHandler.LoadConfig();
         if (config == null)
@@ -102,31 +97,6 @@ public sealed class AppManager
         return true;
     }
 
-    /// <summary>定制版自更新已禁用，残留的 AmazTool 升级器直接删掉</summary>
-    private static void TryRemoveUpgradeApp()
-    {
-        try
-        {
-            if (!Utils.UpgradeAppExists(out var upgradeFileName))
-            {
-                return;
-            }
-
-            foreach (var path in new[] { upgradeFileName, upgradeFileName + ".tmp" })
-            {
-                if (!File.Exists(path))
-                {
-                    continue;
-                }
-                File.Delete(path);
-                Logging.SaveLog($"Removed stale upgrade app: {Path.GetFileName(path)}");
-            }
-        }
-        catch (Exception ex)
-        {
-            Logging.SaveLog("TryRemoveUpgradeApp", ex);
-        }
-    }
 
     public bool InitComponents()
     {

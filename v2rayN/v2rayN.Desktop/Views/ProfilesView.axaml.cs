@@ -78,7 +78,7 @@ public partial class ProfilesView : ReactiveUserControl<ProfilesViewModel>
             if (_config.UiItem.EnableDragDropSort && !_isDndRegistered)
             {
                 lstProfiles.CanUserReorderRows = true;
-                lstProfiles.RowDragHandle = DataGridRowDragHandle.RowHeaderAndRow;
+                lstProfiles.RowDragHandle = DataGridRowDragHandle.Row;
                 lstProfiles.RowDragHandleVisible = true;
                 var rowDragDropOptions = new DataGridRowDragDropOptions()
                 {
@@ -163,6 +163,10 @@ public partial class ProfilesView : ReactiveUserControl<ProfilesViewModel>
 
         RestoreUI();
 
+        // 首帧先给个“加载中”，等 RefreshServersBiz 回来后 UpdateEmptyState 会替换掉
+        txtEmptyState.Text = "正在加载节点…";
+        txtEmptyState.IsVisible = true;
+
         // 窄屏自动隐藏低优先级列，宽屏再放回来；拖窗口时防抖，避免每帧重算
         lstProfiles.SizeChanged += (_, _) => ScheduleAdjustColumns();
         lstProfiles.Loaded += (_, _) =>
@@ -180,6 +184,12 @@ public partial class ProfilesView : ReactiveUserControl<ProfilesViewModel>
     private readonly HashSet<string> _autoHiddenCols = [];
 
     private bool _adjustingCols;
+
+    /// <summary>
+    /// 列区域之外被占用的宽度：行头列 + 边框 2 + 竖向滚动条 8 + 余量。
+    /// 不扣掉它，窄屏时列宽会多算 ~46px，最后一列会被裁。
+    /// </summary>
+    private const double GridChromeWidth = 46;
 
     /// <summary>别名占弹性区的比例：默认 0.4（=2:3），用户拖过列宽后会被记住</summary>
     private double _flexRatio = 0.4;
@@ -246,8 +256,7 @@ public partial class ProfilesView : ReactiveUserControl<ProfilesViewModel>
             return;
         }
 
-        // 减去行头列 + 边框 + 竖向滚动条，否则窄屏会多算 40 多像素导致最后一列被裁
-        var avail = lstProfiles.Bounds.Width - 46;
+        var avail = lstProfiles.Bounds.Width - GridChromeWidth;
         if (avail <= 0)
         {
             return;

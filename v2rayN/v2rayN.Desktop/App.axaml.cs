@@ -1,4 +1,4 @@
-using v2rayN.Desktop.Common;
+﻿using v2rayN.Desktop.Common;
 using v2rayN.Desktop.Views;
 
 namespace v2rayN.Desktop;
@@ -22,14 +22,19 @@ public partial class App : Application
         {
             if (!Design.IsDesignMode)
             {
+                Global.BootMark("before InitComponents");
                 AppManager.Instance.InitComponents();
+                Global.BootMark("after InitComponents");
                 DataContext = StatusBarViewModel.Instance;
             }
 
+            Global.BootMark("before new MainWindowViewModel");
             var mainWindowViewModel = new MainWindowViewModel();
+            Global.BootMark("after new MainWindowViewModel");
             var mainWindow = (MainWindow)viewLocator.Build(mainWindowViewModel);
             mainWindow.ViewModel = mainWindowViewModel;
             desktop.MainWindow = mainWindow;
+            Global.BootMark("after Build MainWindow");
 
             if (OperatingSystem.IsMacOS())
             {

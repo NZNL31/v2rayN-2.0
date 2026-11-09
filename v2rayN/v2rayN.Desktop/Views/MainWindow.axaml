@@ -11,7 +11,7 @@
     Title="v2rayN"
     Width="1200"
     Height="800"
-    MinWidth="600"
+    MinWidth="820"
     x:DataType="vms:MainWindowViewModel"
     Design.DataContext="{x:Static dd:DesignData.MainWindow}"
     Icon="/Assets/NotifyIcon1.ico"

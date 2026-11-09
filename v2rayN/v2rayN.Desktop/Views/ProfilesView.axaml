@@ -219,7 +219,7 @@
                 HeadersVisibility="All"
                 IsReadOnly="False"
                 ItemsSource="{Binding ProfileItems}"
-                ShowRowNumbers="True">
+                ShowRowNumbers="False">
                 <DataGrid.KeyBindings>
                     <KeyBinding Command="{Binding Export2ShareUrlCmd}" Gesture="Ctrl+C" />
                     <KeyBinding Command="{Binding SetDefaultServerCmd}" Gesture="Enter" />
