@@ -282,6 +282,7 @@
                                 <Setter Property="Margin" Value="0,1" />
                                 <Setter Property="CornerRadius" Value="9" />
                                 <Setter Property="HorizontalAlignment" Value="Stretch" />
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                                 <Setter Property="Foreground" Value="{DynamicResource AppTextPrimary}" />
                             </Style>
                             <Style Selector="ListBoxItem:pointerover">
@@ -294,7 +295,16 @@
                         </ListBox.Styles>
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Remarks}" TextTrimming="CharacterEllipsis" />
+                                <Border Background="Transparent">
+                                    <Border.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Click="RailSubMenuEdit_Click" Header="{x:Static resx:ResUI.menuSubEdit}" />
+                                            <MenuItem Click="RailSubMenuUpdate_Click" Header="{x:Static resx:ResUI.RailSubUpdate}" />
+                                            <MenuItem Click="RailSubMenuDelete_Click" Header="{x:Static resx:ResUI.menuSubDelete}" />
+                                        </ContextMenu>
+                                    </Border.ContextMenu>
+                                    <TextBlock Text="{Binding Remarks}" TextTrimming="CharacterEllipsis" />
+                                </Border>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>

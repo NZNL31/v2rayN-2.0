@@ -1034,6 +1034,43 @@ public partial class ProfilesViewModel : MyReactiveObject
         }
     }
 
+    /// <summary>按 id 编辑订阅（左栏右键菜单用，不依赖当前选中项）</summary>
+    public async Task EditSubById(string subId)
+    {
+        var item = await AppManager.Instance.GetSubItem(subId);
+        if (item is null)
+        {
+            return;
+        }
+
+        var subEditViewModel = new SubEditViewModel(item);
+        if (await AppManager.Instance.WindowDialog.ShowDialogAsync(subEditViewModel) == true)
+        {
+            await RefreshSubscriptions();
+            await SubSelectedChangedAsync();
+        }
+    }
+
+    /// <summary>按 id 删除订阅（左栏右键菜单用，不依赖当前选中项）</summary>
+    public async Task DeleteSubById(string subId)
+    {
+        var item = await AppManager.Instance.GetSubItem(subId);
+        if (item is null)
+        {
+            return;
+        }
+
+        if (await ShowYesNoInteraction.HandleSafe(ResUI.RemoveServer) == false)
+        {
+            return;
+        }
+
+        await ConfigHandler.DeleteSubItem(_config, item.Id);
+
+        await RefreshSubscriptions();
+        await SubSelectedChangedAsync();
+    }
+
     private async Task DeleteSubAsync()
     {
         var item = await AppManager.Instance.GetSubItem(_config.SubIndexId);

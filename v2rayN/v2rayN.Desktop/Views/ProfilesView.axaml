@@ -169,34 +169,7 @@
                             <PathIcon Data="{StaticResource building_ping}" />
                         </Button.Content>
                     </Button>
-                    <Button
-                        x:Name="btnSubEditTop"
-                        Margin="{StaticResource MarginLr4}"
-                        Classes="IconButton Success"
-                        ToolTip.Tip="{x:Static resx:ResUI.menuSubEdit}">
-                        <Button.Content>
-                            <PathIcon Data="{StaticResource SemiIconEdit}" />
-                        </Button.Content>
-                    </Button>
                     <!--  更新当前订阅：一次跑两遍（先直连，再走代理）  -->
-                    <Button
-                        x:Name="btnSubUpdateTop"
-                        Margin="{StaticResource MarginLr4}"
-                        Classes="IconButton Success"
-                        Click="BtnSubUpdateTop_Click"
-                        ToolTip.Tip="{x:Static resx:ResUI.TipUpdateSubDirectFirst}">
-                        <Button.Content>
-                            <Path
-                                Width="17"
-                                Height="17"
-                                Data="M8.5,2.6 V10.4 M5.2,7.2 L8.5,10.5 L11.8,7.2 M3,13.4 H14"
-                                Stretch="None"
-                                Stroke="{DynamicResource AppTextPrimary}"
-                                StrokeLineCap="Round"
-                                StrokeJoin="Round"
-                                StrokeThickness="1.5" />
-                        </Button.Content>
-                    </Button>
                     </WrapPanel>
 
                     <!--  当前视图汇总：节点数 · 已测 · 平均延迟  -->

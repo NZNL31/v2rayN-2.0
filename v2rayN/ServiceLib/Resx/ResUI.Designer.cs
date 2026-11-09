@@ -5618,5 +5618,14 @@ namespace ServiceLib.Resx {
                 return ResourceManager.GetString("SummaryAvgDelay", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   查找类似 Update this subscription 的本地化字符串。
+        /// </summary>
+        public static string RailSubUpdate {
+            get {
+                return ResourceManager.GetString("RailSubUpdate", resourceCulture);
+            }
+        }
     }
 }

@@ -256,4 +256,75 @@ public partial class MainWindow
 
         _railSelectedBefore = null;
     }
+    /// <summary>左栏右键：编辑这个订阅</summary>
+    private async void RailSubMenuEdit_Click(object? sender, RoutedEventArgs e)
+    {
+        try
+        {
+            if (ResolveRailSub(sender) is not { } sub || sub.Id.IsNullOrEmpty())
+            {
+                return;
+            }
+
+            await ViewModel.ProfilesViewModel.EditSubById(sub.Id);
+        }
+        catch (Exception ex)
+        {
+            Logging.SaveLog("RailSubMenu", ex);
+        }
+    }
+
+    /// <summary>左栏右键：更新这个订阅</summary>
+    private async void RailSubMenuUpdate_Click(object? sender, RoutedEventArgs e)
+    {
+        try
+        {
+            if (ResolveRailSub(sender) is not { } sub || sub.Id.IsNullOrEmpty())
+            {
+                return;
+            }
+
+            // 先直连，失败再走代理
+            var ok = await ViewModel.UpdateSubscriptionProcess(sub.Id, false);
+            if (!ok)
+            {
+                await ViewModel.UpdateSubscriptionProcess(sub.Id, true);
+            }
+
+            await ViewModel.ProfilesViewModel.RefreshSubscriptions();
+        }
+        catch (Exception ex)
+        {
+            Logging.SaveLog("RailSubMenu", ex);
+        }
+    }
+
+    /// <summary>左栏右键：删除这个订阅</summary>
+    private async void RailSubMenuDelete_Click(object? sender, RoutedEventArgs e)
+    {
+        try
+        {
+            if (ResolveRailSub(sender) is not { } sub || sub.Id.IsNullOrEmpty())
+            {
+                return;
+            }
+
+            await ViewModel.ProfilesViewModel.DeleteSubById(sub.Id);
+        }
+        catch (Exception ex)
+        {
+            Logging.SaveLog("RailSubMenu", ex);
+        }
+    }
+
+    /// <summary>从菜单项拿到它对应的订阅；拿不到就退回当前选中项</summary>
+    private SubItem? ResolveRailSub(object? sender)
+    {
+        if (sender is MenuItem { DataContext: SubItem sub })
+        {
+            return sub;
+        }
+
+        return lstGroupRail.SelectedItem as SubItem;
+    }
 }

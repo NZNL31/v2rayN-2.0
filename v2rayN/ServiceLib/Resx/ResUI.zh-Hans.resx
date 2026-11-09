@@ -1969,4 +1969,7 @@
   <data name="SummaryAvgDelay" xml:space="preserve">
     <value>平均 {0} ms</value>
   </data>
+  <data name="RailSubUpdate" xml:space="preserve">
+    <value>更新此订阅</value>
+  </data>
 </root>

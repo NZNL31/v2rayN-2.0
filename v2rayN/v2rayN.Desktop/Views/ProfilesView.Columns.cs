@@ -190,10 +190,6 @@ public partial class ProfilesView
     }
 
     /// <summary>工具栏「更新当前订阅」：先不通过代理，再通过代理</summary>
-    private void BtnSubUpdateTop_Click(object? sender, RoutedEventArgs e)
-    {
-        AppEvents.SubGroupUpdateBothRequested.Publish();
-    }
 
     private void AutofitColumnWidth()
     {

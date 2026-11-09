@@ -1977,4 +1977,7 @@ The "Get Certificate" action may fail if a self-signed certificate is used or if
   <data name="SummaryAvgDelay" xml:space="preserve">
     <value>avg {0} ms</value>
   </data>
+  <data name="RailSubUpdate" xml:space="preserve">
+    <value>Update this subscription</value>
+  </data>
 </root>
