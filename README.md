@@ -1,10 +1,37 @@
-# v2rayN 2.0（界面重制分支）
+﻿# v2rayN 2.0（界面重制分支）
 
 基于 [v2rayN](https://github.com/2dust/v2rayN) **7.25.6** 的界面重制分支：只改界面与少量交互，**不动内核、不动协议实现**，可直接替换官方 exe 使用。
 
 > 本仓库不包含任何节点、订阅或配置数据；截图中的订阅分组与节点信息已打码。
 
 ![主界面](docs/screenshot-main.png)
+
+## 安装（给使用者）
+
+**方式一：一键脚本**
+
+```powershell
+.\install.ps1                          # 装到 %USERPROFILE%\v2rayN-2.0
+.\install.ps1 -TargetDir "D:\v2rayN"   # 覆盖到已有安装目录（会先备份 exe）
+.\install.ps1 -Proxy "http://127.0.0.1:10808"   # 走代理下载
+```
+
+**方式二：手动**
+
+1. 到 [Releases](../../releases) 下载 `v2rayN-windows-64.zip`
+2. 解压，把里面的文件覆盖到 v2rayN 目录（`guiConfigs` / `bin` 保留不动）
+
+**方式三：自己编**（见下方「构建」）
+
+## 更新机制（重点）
+
+本分支把 **v2rayN 本体的自更新指向了本仓库的 Release**，所以：
+
+- 程序内「检查更新」里的 **v2rayN** 一项，检查的是 **NZNL31/v2rayN-2.0** 的发布
+- 更新下来的是**带界面的构建**，不会出现"更新后 UI 变回原版"
+- 内核（Xray / mihomo / sing-box）与 GeoFiles 仍然各自走官方源，可以放心更新
+
+> 首次安装后如果程序提示 v2rayN 更新失败，说明本仓库还没有发布版本；发布一次即可正常。
 
 ## 改了什么
 
@@ -41,8 +68,8 @@
 
 **更新策略**
 
-- 关闭 v2rayN 本体自更新（避免定制被覆盖），**内核 Xray / mihomo / sing-box 与 GeoFiles 仍可正常更新**
-- 启动时自动清理残留的 `AmazTool.exe` 升级器
+- 本体自更新指向本仓库 Release（见上「更新机制」），更新不会丢界面
+- 内核 Xray / mihomo / sing-box 与 GeoFiles 仍走官方源
 
 ![图标](docs/screenshot-icons.png)
 

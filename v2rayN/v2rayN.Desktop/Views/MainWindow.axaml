@@ -1,4 +1,4 @@
-<Window
+﻿<Window
     x:Class="v2rayN.Desktop.Views.MainWindow"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -46,10 +46,11 @@
                             LetterSpacing="0"
                             Text="v2rayN" />
                         <TextBlock
+                            x:Name="txtAppVersion"
                             FontSize="10"
                             Foreground="{DynamicResource AppTextSecondary}"
                             LetterSpacing="0.6"
-                            Text="7.25.6" />
+                            Text="2.0.0" />
                     </StackPanel>
 
                     <Button

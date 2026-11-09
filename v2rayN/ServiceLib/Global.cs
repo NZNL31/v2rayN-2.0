@@ -4,11 +4,15 @@ public class Global
 {
     public const string AppName = "v2rayN";
 
+    /// <summary>本定制分支的仓库（自更新与发布都走这里）</summary>
+    public const string ForkRepo = "NZNL31/v2rayN-2.0";
+
     /// <summary>
-    /// 定制版开关：禁止 v2rayN 本体自动更新（会下载新版 exe 覆盖掉定制内容）。
-    /// 内核（Xray / mihomo / sing-box）与 GeoFiles 的更新不受影响。
+    /// 定制版开关：本体自更新走本仓库 Release（见 CoreUrls[v2rayN]），
+    /// 更新下来的就是带定制的构建，所以可以放心开启。
+    /// 置为 true 则完全关闭本体更新（只更新内核与 GeoFiles）。
     /// </summary>
-    public const bool DisableSelfUpdate = true;
+    public const bool DisableSelfUpdate = false;
     public const string GithubUrl = "https://github.com";
     public const string GithubApiUrl = "https://api.github.com/repos";
     public const string GeoUrl = "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/{0}.dat";
@@ -696,7 +700,7 @@ public class Global
         { ECoreType.overtls, "ShadowsocksR-Live/overtls" },
         { ECoreType.shadowquic, "spongebob888/shadowquic" },
         { ECoreType.mieru, "enfein/mieru" },
-        { ECoreType.v2rayN, "2dust/v2rayN" },
+        { ECoreType.v2rayN, ForkRepo },
     };
 
     public static readonly List<string> OtherGeoUrls =

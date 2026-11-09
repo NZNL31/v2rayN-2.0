@@ -1,4 +1,4 @@
-using Avalonia.Controls.Notifications;
+﻿using Avalonia.Controls.Notifications;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 using Avalonia.Controls.Primitives;
@@ -28,6 +28,7 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
         InitializeComponent();
 
         _config = AppManager.Instance.Config;
+        txtAppVersion.Text = Utils.GetVersionInfo();
         _manager = new WindowNotificationManager(TopLevel.GetTopLevel(this)) { MaxItems = 3, Position = NotificationPosition.TopRight };
 
         KeyDown += MainWindow_KeyDown;
