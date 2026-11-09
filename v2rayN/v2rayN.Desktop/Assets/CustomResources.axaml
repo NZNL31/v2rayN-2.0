@@ -65,4 +65,47 @@
             <Setter Property="Background" Value="{DynamicResource AppNavSelected}" />
         </Style>
     </ControlTheme>
+
+
+    <!--  ================= 定制调色板（原 GlobalResources 里新增的部分）=================  -->
+
+    <!--  Docker Desktop 风格调色板（浅色 / 深色两套）  -->
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+            <SolidColorBrush x:Key="DockerBlue" Color="#1D63ED" />
+            <SolidColorBrush x:Key="DockerBlueHover" Color="#2A6FF0" />
+            <SolidColorBrush x:Key="DockerBluePressed" Color="#1751C4" />
+            <SolidColorBrush x:Key="AppPageBg" Color="#FAFAFA" />
+            <SolidColorBrush x:Key="AppCardBg" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="AppCardBorder" Color="#E8E8E8" />
+            <SolidColorBrush x:Key="AppTextPrimary" Color="#1A1A1A" />
+            <SolidColorBrush x:Key="AppTextSecondary" Color="#6B6B6B" />
+            <SolidColorBrush x:Key="AppNavHover" Color="#E8E8E8" />
+            <SolidColorBrush x:Key="AppHeaderHover" Color="#DCDCDC" />
+            <SolidColorBrush x:Key="AppNavSelected" Color="#DFDFDF" />
+            <SolidColorBrush x:Key="AppRowHover" Color="#F0F0F0" />
+            <SolidColorBrush x:Key="AppRowAltBg" Color="#F4F4F4" />
+            <SolidColorBrush x:Key="AppBadgeBg" Color="#F0F0F0" />
+            <SolidColorBrush x:Key="AppSidebarBg" Color="#EFEFEF" />
+            <SolidColorBrush x:Key="AppHeaderSeparator" Color="#E3E7ED" />
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Dark">
+            <SolidColorBrush x:Key="DockerBlue" Color="#1D63ED" />
+            <SolidColorBrush x:Key="DockerBlueHover" Color="#2A6FF0" />
+            <SolidColorBrush x:Key="DockerBluePressed" Color="#1751C4" />
+            <SolidColorBrush x:Key="AppPageBg" Color="#16181D" />
+            <SolidColorBrush x:Key="AppCardBg" Color="#1E2127" />
+            <SolidColorBrush x:Key="AppCardBorder" Color="#2C3138" />
+            <SolidColorBrush x:Key="AppTextPrimary" Color="#E6E8EB" />
+            <SolidColorBrush x:Key="AppTextSecondary" Color="#98A2B3" />
+            <SolidColorBrush x:Key="AppNavHover" Color="#262B33" />
+            <SolidColorBrush x:Key="AppHeaderHover" Color="#2E343D" />
+            <SolidColorBrush x:Key="AppNavSelected" Color="#2C333D" />
+            <SolidColorBrush x:Key="AppRowHover" Color="#232830" />
+            <SolidColorBrush x:Key="AppRowAltBg" Color="#191C21" />
+            <SolidColorBrush x:Key="AppBadgeBg" Color="#2A3039" />
+            <SolidColorBrush x:Key="AppSidebarBg" Color="#1A1D22" />
+            <SolidColorBrush x:Key="AppHeaderSeparator" Color="#2C3138" />
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
 </ResourceDictionary>
