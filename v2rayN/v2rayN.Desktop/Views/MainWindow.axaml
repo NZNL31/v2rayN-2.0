@@ -199,33 +199,17 @@
                 Background="{DynamicResource AppSidebarBg}"
                 DockPanel.Dock="Left">
                 <DockPanel Margin="6,0,6,10">
-                    <!--  一级入口：配置项（纯文字，点击弹出原「添加服务器」菜单）  -->
-                    <Button
-                        x:Name="btnRailConfig"
-                        Margin="4,2,4,0"
-                        DockPanel.Dock="Top"
-                        Click="BtnRailConfig_Click"
-                        Content="{x:Static resx:ResUI.menuServers}"
-                        Theme="{DynamicResource RailItemButton}" />
 
-
-                    <!--  一级：配置项（上面）与订阅分组（下面）之间的分隔线  -->
-                    <Border
-                        Margin="12,6,12,0"
-                        BorderBrush="{DynamicResource AppCardBorder}"
-                        BorderThickness="0,1,0,0"
-                        DockPanel.Dock="Top" />
-
-                    <!--  二级区标题：订阅分组（灰色小字）+ 右侧 新增 / 菜单  -->
+                    <!--  单行标题：配置/订阅分组 + 右侧 ＋（添加与配置都在这里）  -->
                     <Grid
-                        Margin="14,6,6,2"
-                        ColumnDefinitions="*,Auto,Auto"
+                        Margin="14,8,6,2"
+                        ColumnDefinitions="*,Auto"
                         DockPanel.Dock="Top">
                         <TextBlock
                             FontSize="11"
                             Foreground="{DynamicResource AppTextSecondary}"
                             LetterSpacing="1"
-                            Text="{x:Static resx:ResUI.menuSubscription}"
+                            Text="{x:Static resx:ResUI.RailTitle}"
                             VerticalAlignment="Center" />
                         <Button
                             x:Name="btnRailSubAddTop"
@@ -234,9 +218,9 @@
                             Height="20"
                             Margin="0,0,2,0"
                             Classes="HeaderIcon"
-                            Command="{Binding ProfilesViewModel.AddSubCmd}"
+                            Click="BtnRailConfig_Click"
                             Theme="{DynamicResource HeaderIconButton}"
-                            ToolTip.Tip="{x:Static resx:ResUI.menuSubAdd}">
+                            ToolTip.Tip="{x:Static resx:ResUI.RailAddTip}">
                             <Path
                                 Width="12"
                                 Height="12"
@@ -245,22 +229,6 @@
                                 Stroke="{DynamicResource AppTextSecondary}"
                                 StrokeLineCap="Round"
                                 StrokeThickness="1.4" />
-                        </Button>
-                        <Button
-                            x:Name="btnRailSubMenu"
-                            Grid.Column="2"
-                            Width="20"
-                            Height="20"
-                            Classes="HeaderIcon"
-                            Click="BtnRailSubMenu_Click"
-                            Theme="{DynamicResource HeaderIconButton}"
-                            ToolTip.Tip="{x:Static resx:ResUI.menuSubscription}">
-                            <Path
-                                Width="16"
-                                Height="16"
-                                Data="M2.9,8 A1.1,1.1 0 1 1 5.1,8 A1.1,1.1 0 1 1 2.9,8 Z M6.9,8 A1.1,1.1 0 1 1 9.1,8 A1.1,1.1 0 1 1 6.9,8 Z M10.9,8 A1.1,1.1 0 1 1 13.1,8 A1.1,1.1 0 1 1 10.9,8 Z"
-                                Fill="{DynamicResource AppTextSecondary}"
-                                Stretch="None" />
                         </Button>
                     </Grid>
                     <!--  底部工具栏已移除：编辑订阅移到列表上方工具栏（测速图标之后），加号统一用标题栏的 ＋  -->
@@ -524,6 +492,11 @@
                                     VerticalAlignment="Center" />
                             </MenuItem.Header>
                             <MenuItem
+                                x:Name="menuSubSettings"
+                                Click="MenuSubSettings_Click"
+                                Header="{x:Static resx:ResUI.menuSubscription}" />
+                            <Separator />
+                            <MenuItem
                                 x:Name="menuAddServerViaClipboard"
                                 Header="{x:Static resx:ResUI.menuAddServerViaClipboard}"
                                 InputGesture="Ctrl+V" />
@@ -551,6 +524,7 @@
                             <MenuItem x:Name="menuAddTuicServer" Header="{x:Static resx:ResUI.menuAddTuicServer}" />
                             <MenuItem x:Name="menuAddAnytlsServer" Header="{x:Static resx:ResUI.menuAddAnytlsServer}" />
                             <MenuItem x:Name="menuAddNaiveServer" Header="{x:Static resx:ResUI.menuAddNaiveServer}" />
+
                         </MenuItem>
 
                         <MenuItem x:Name="menuSubscription" IsVisible="False">

@@ -1987,4 +1987,10 @@
   <data name="RailSubUpdateAllProxy" xml:space="preserve">
     <value>更新所有订阅（通过代理）</value>
   </data>
+  <data name="RailTitle" xml:space="preserve">
+    <value>配置/订阅分组</value>
+  </data>
+  <data name="RailAddTip" xml:space="preserve">
+    <value>添加 / 配置</value>
+  </data>
 </root>

@@ -5669,5 +5669,23 @@ namespace ServiceLib.Resx {
                 return ResourceManager.GetString("RailSubUpdateAllProxy", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   查找类似 Config / Groups 的本地化字符串。
+        /// </summary>
+        public static string RailTitle {
+            get {
+                return ResourceManager.GetString("RailTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   查找类似 Add / Configure 的本地化字符串。
+        /// </summary>
+        public static string RailAddTip {
+            get {
+                return ResourceManager.GetString("RailAddTip", resourceCulture);
+            }
+        }
     }
 }

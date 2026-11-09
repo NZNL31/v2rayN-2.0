@@ -1995,4 +1995,10 @@ The "Get Certificate" action may fail if a self-signed certificate is used or if
   <data name="RailSubUpdateAllProxy" xml:space="preserve">
     <value>Update all subscriptions (via proxy)</value>
   </data>
+  <data name="RailTitle" xml:space="preserve">
+    <value>Config / Groups</value>
+  </data>
+  <data name="RailAddTip" xml:space="preserve">
+    <value>Add / Configure</value>
+  </data>
 </root>
