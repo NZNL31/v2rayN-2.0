@@ -1,4 +1,4 @@
-#requires -Version 7.0
+﻿#requires -Version 7.0
 <#
 .SYNOPSIS
     一条命令发布 v2rayN 2.0 新版本：改版本号 -> 编译 -> 打包 -> 建 Release -> 传资产。
@@ -20,17 +20,17 @@ param(
     [string]$Notes = '',
     [switch]$SkipBuild,
     [switch]$Draft,
-    [string]$TokenFile = 'F:\v2rayN-src\.gh-token',
+    [string]$TokenFile = 'S:\v2rayN-2.0-kit\05-凭证\.gh-token',
     [string]$Proxy = 'http://127.0.0.1:10888'
 )
 
 $ErrorActionPreference = 'Stop'
-$Repo = 'F:\v2rayN-src\z\v2rayN-master'
+$Repo = 'S:\v2rayN-2.0-kit\02-源码'
 $Proj = Join-Path $Repo 'v2rayN\v2rayN.Desktop\v2rayN.Desktop.csproj'
 $AmazProj = Join-Path $Repo 'v2rayN\AmazTool\AmazTool.csproj'
-$AppOut = 'F:\v2rayN-build'
-$AmazOut = 'F:\v2rayN-build-amaz'
-$RelRoot = 'F:\v2rayN-release'
+$AppOut = 'S:\v2rayN-build'
+$AmazOut = 'S:\v2rayN-build-amaz'
+$RelRoot = 'S:\v2rayN-release'
 $PkgDir = Join-Path $RelRoot 'v2rayN-2.0'
 $Zip = Join-Path $RelRoot 'v2rayN-windows-64.zip'
 $Dotnet = 'F:\dotnet-sdk\dotnet.exe'
