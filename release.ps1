@@ -1,4 +1,4 @@
-#requires -Version 7.0
+﻿#requires -Version 7.0
 <#
 .SYNOPSIS
     一条命令发布 v2rayN 2.0 新版本：改版本号 -> 编译 -> 打包 -> 建 Release -> 传资产。
@@ -20,6 +20,7 @@ param(
     [string]$Notes = '',
     [switch]$SkipBuild,
     [switch]$Draft,
+    [switch]$NoProxy,
     [string]$TokenFile = 'S:\v2rayN-2.0\凭证\.gh-token',
     [string]$Proxy = 'http://127.0.0.1:10888'
 )
@@ -117,7 +118,8 @@ if (-not $token) {
 }
 
 $h = @{ Authorization = "Bearer $token"; 'User-Agent' = 'dsh'; Accept = 'application/vnd.github+json' }
-$iwr = @{ Headers = $h; Proxy = $Proxy; TimeoutSec = 120; UseBasicParsing = $true }
+$iwr = @{ Headers = $h; TimeoutSec = 120; UseBasicParsing = $true }
+if (-not $NoProxy) { $iwr.Proxy = $Proxy }
 
 $body = if ($Notes) { $Notes } else { "v2rayN $Version（界面重制）`n`n- 基于上游 v2rayN 7.25.6`n- 完整说明见 README.md / 示例.md" }
 $payload = @{ tag_name = $Version; target_commitish = 'main'; name = "v2rayN $Version"; body = $body; draft = [bool]$Draft; prerelease = $false } | ConvertTo-Json -Depth 5
