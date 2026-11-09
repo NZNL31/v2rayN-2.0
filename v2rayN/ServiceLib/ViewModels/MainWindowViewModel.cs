@@ -358,8 +358,11 @@ public partial class MainWindowViewModel : MyReactiveObject
         TaskManager.Instance.RegUpdateTask(_config, UpdateTaskHandler);
         Global.BootMark("VM.Init after RegUpdateTask");
 
-        // 总是初始化：状态栏的实时速率需要它（关闭统计时不会写数据库）
-        await StatisticsManager.Instance.Init(_config, UpdateStatisticsHandler);
+        // 状态栏的实时速率需要它（关闭「按节点统计」时不会写数据库）
+        if (Global.EnableTrafficPolling)
+        {
+            await StatisticsManager.Instance.Init(_config, UpdateStatisticsHandler);
+        }
         Global.BootMark("VM.Init before RefreshServers");
         await RefreshServersDispatcherAsync();
         Global.BootMark("VM.Init after RefreshServers");

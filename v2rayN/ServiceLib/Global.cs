@@ -12,6 +12,12 @@ public class Global
     public const string ForkRepo = "NZNL31/v2rayN-2.0";
 
     /// <summary>
+    /// 是否每秒轮询一次内核流量（状态栏的实时速率依赖它）。
+    /// 置为 false 可省掉这次轮询，但状态栏的「↑ ↓ 速率」会一直为空。
+    /// </summary>
+    public const bool EnableTrafficPolling = true;
+
+    /// <summary>
     /// 定制版开关：本体自更新走本仓库 Release（见 CoreUrls[v2rayN]），
     /// 更新下来的就是带定制的构建，所以可以放心开启。
     /// 置为 true 则完全关闭本体更新（只更新内核与 GeoFiles）。
