@@ -11,13 +11,9 @@
     CanResize="False"
     ShowInTaskbar="False"
     SizeToContent="Height"
-    WindowDecorations="None"
+    WindowDecorations="Full"
     WindowStartupLocation="CenterOwner"
-    mc:Ignorable="d"
-    xmlns:chrome="clr-namespace:v2rayN.Desktop.Views.Chrome">
-<DockPanel>
-<chrome:WindowTitleBar DockPanel.Dock="Top" />
-
+    mc:Ignorable="d">
 
     <Grid Margin="24" RowDefinitions="*,Auto">
         <ScrollViewer
@@ -53,5 +49,4 @@
                 IsCancel="True" />
         </StackPanel>
     </Grid>
-</DockPanel>
 </Window>

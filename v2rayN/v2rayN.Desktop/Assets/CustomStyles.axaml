@@ -1,0 +1,13 @@
+<Styles
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:chrome="clr-namespace:v2rayN.Desktop.Views.Chrome">
+    <!--
+        统一给所有对话框套自绘标题栏（去掉系统原生标题栏）。
+        主窗口内部会自行跳过（它有自己的整套顶栏）。
+        这样各个对话框的 XAML 与上游保持一致，升级时不会冲突。
+    -->
+    <Style Selector="Window">
+        <Setter Property="chrome:WindowChromeBehavior.TitleBar" Value="True" />
+    </Style>
+</Styles>

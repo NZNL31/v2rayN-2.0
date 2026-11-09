@@ -622,6 +622,7 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
     {
         base.OnLoaded(sender, e);
         Global.BootMark("MainWindow OnLoaded");
+
         if (_config.UiItem.AutoHideStartup)
         {
             ShowHideWindow(false);

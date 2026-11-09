@@ -14,12 +14,7 @@
     Design.DataContext="{x:Static dd:DesignData.RoutingRuleSetting}"
     ShowInTaskbar="False"
     WindowStartupLocation="CenterScreen"
-    mc:Ignorable="d"
-    xmlns:chrome="clr-namespace:v2rayN.Desktop.Views.Chrome"
-    WindowDecorations="None">
-<DockPanel>
-<chrome:WindowTitleBar DockPanel.Dock="Top" />
-
+    mc:Ignorable="d">
     <DockPanel>
         <Menu Margin="{StaticResource Margin4}" DockPanel.Dock="Top">
             <MenuItem x:Name="menuRuleAdd" Header="{x:Static resx:ResUI.menuRuleAdd}" />
@@ -261,5 +256,4 @@
             </TabItem>
         </TabControl>
     </DockPanel>
-</DockPanel>
 </Window>

@@ -1,4 +1,4 @@
-<Application
+﻿<Application
     x:Class="v2rayN.Desktop.App"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -23,6 +23,7 @@
         <StyleInclude Source="avares://Semi.Avalonia.DataGrid/Index.axaml" />
         <dialogHost:DialogHostStyles />
         <StyleInclude Source="Assets/GlobalStyles.axaml" />
+        <StyleInclude Source="Assets/CustomStyles.axaml" />
     </Application.Styles>
 
     <TrayIcon.Icons>

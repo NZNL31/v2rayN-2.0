@@ -15,12 +15,7 @@
     Design.DataContext="{x:Static dd:DesignData.SubSetting}"
     ShowInTaskbar="False"
     WindowStartupLocation="CenterScreen"
-    mc:Ignorable="d"
-    xmlns:chrome="clr-namespace:v2rayN.Desktop.Views.Chrome"
-    WindowDecorations="None">
-<DockPanel>
-<chrome:WindowTitleBar DockPanel.Dock="Top" />
-
+    mc:Ignorable="d">
     <dialogHost:DialogHost
         CloseOnClickAway="True"
         DisableOpeningAnimation="True"
@@ -83,5 +78,4 @@
             </DataGrid>
         </DockPanel>
     </dialogHost:DialogHost>
-</DockPanel>
 </Window>
