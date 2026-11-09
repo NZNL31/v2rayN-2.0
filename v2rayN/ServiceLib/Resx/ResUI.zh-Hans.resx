@@ -1975,4 +1975,16 @@
   <data name="RailSubUpdateAll" xml:space="preserve">
     <value>更新所有订阅</value>
   </data>
+  <data name="RailSubUpdateDirect" xml:space="preserve">
+    <value>更新此订阅（不通过代理）</value>
+  </data>
+  <data name="RailSubUpdateProxy" xml:space="preserve">
+    <value>更新此订阅（通过代理）</value>
+  </data>
+  <data name="RailSubUpdateAllDirect" xml:space="preserve">
+    <value>更新所有订阅（不通过代理）</value>
+  </data>
+  <data name="RailSubUpdateAllProxy" xml:space="preserve">
+    <value>更新所有订阅（通过代理）</value>
+  </data>
 </root>

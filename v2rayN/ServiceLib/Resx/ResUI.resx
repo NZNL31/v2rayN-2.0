@@ -1983,4 +1983,16 @@ The "Get Certificate" action may fail if a self-signed certificate is used or if
   <data name="RailSubUpdateAll" xml:space="preserve">
     <value>Update all subscriptions</value>
   </data>
+  <data name="RailSubUpdateDirect" xml:space="preserve">
+    <value>Update this subscription (direct)</value>
+  </data>
+  <data name="RailSubUpdateProxy" xml:space="preserve">
+    <value>Update this subscription (via proxy)</value>
+  </data>
+  <data name="RailSubUpdateAllDirect" xml:space="preserve">
+    <value>Update all subscriptions (direct)</value>
+  </data>
+  <data name="RailSubUpdateAllProxy" xml:space="preserve">
+    <value>Update all subscriptions (via proxy)</value>
+  </data>
 </root>

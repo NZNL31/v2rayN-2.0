@@ -256,25 +256,6 @@ public partial class MainWindow
 
         _railSelectedBefore = null;
     }
-    /// <summary>左栏右键「所有」：更新全部订阅（直连优先，失败转代理）</summary>
-    private async void RailSubMenuUpdateAll_Click(object? sender, RoutedEventArgs e)
-    {
-        try
-        {
-            var ok = await ViewModel.UpdateSubscriptionProcess(string.Empty, false);
-            if (!ok)
-            {
-                await ViewModel.UpdateSubscriptionProcess(string.Empty, true);
-            }
-
-            await ViewModel.ProfilesViewModel.RefreshSubscriptions();
-        }
-        catch (Exception ex)
-        {
-            Logging.SaveLog("RailSubMenu", ex);
-        }
-    }
-
     /// <summary>左栏右键：编辑这个订阅</summary>
     private async void RailSubMenuEdit_Click(object? sender, RoutedEventArgs e)
     {
@@ -298,18 +279,16 @@ public partial class MainWindow
     {
         try
         {
-            if (ResolveRailSub(sender) is not { } sub || sub.Id.IsNullOrEmpty())
+            if (ResolveRailSub(sender) is not { } sub)
             {
                 return;
             }
 
-            // 先直连，失败再走代理
-            var ok = await ViewModel.UpdateSubscriptionProcess(sub.Id, false);
-            if (!ok)
-            {
-                await ViewModel.UpdateSubscriptionProcess(sub.Id, true);
-            }
-
+            // 按菜单项显式选择：Tag=proxy 走代理，否则直连；Id 为空表示「所有」
+            var blProxy = (sender as MenuItem)?.Tag as string == "proxy";
+            var subId = sub.Id ?? string.Empty;
+            Logging.SaveLog($"rail update: sub='{subId}' proxy={blProxy}");
+            await ViewModel.UpdateSubscriptionProcess(subId, blProxy);
             await ViewModel.ProfilesViewModel.RefreshSubscriptions();
         }
         catch (Exception ex)

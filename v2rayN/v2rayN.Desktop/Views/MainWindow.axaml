@@ -298,24 +298,36 @@
                                 <Border Background="Transparent">
                                     <Border.ContextMenu>
                                         <ContextMenu>
-                                            <!--  具体订阅：编辑 / 更新此订阅 / 删除  -->
+                                            <!--  具体订阅  -->
                                             <MenuItem
                                                 Click="RailSubMenuEdit_Click"
                                                 Header="{x:Static resx:ResUI.menuSubEdit}"
                                                 IsVisible="{Binding Id, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
                                             <MenuItem
                                                 Click="RailSubMenuUpdate_Click"
-                                                Header="{x:Static resx:ResUI.RailSubUpdate}"
-                                                IsVisible="{Binding Id, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                                                Header="{x:Static resx:ResUI.RailSubUpdateDirect}"
+                                                IsVisible="{Binding Id, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                                Tag="direct" />
+                                            <MenuItem
+                                                Click="RailSubMenuUpdate_Click"
+                                                Header="{x:Static resx:ResUI.RailSubUpdateProxy}"
+                                                IsVisible="{Binding Id, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                                Tag="proxy" />
                                             <MenuItem
                                                 Click="RailSubMenuDelete_Click"
                                                 Header="{x:Static resx:ResUI.menuSubDelete}"
                                                 IsVisible="{Binding Id, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
-                                            <!--  「所有」：只能整体更新  -->
+                                            <!--  「所有」  -->
                                             <MenuItem
-                                                Click="RailSubMenuUpdateAll_Click"
-                                                Header="{x:Static resx:ResUI.RailSubUpdateAll}"
-                                                IsVisible="{Binding Id, Converter={x:Static StringConverters.IsNullOrEmpty}}" />
+                                                Click="RailSubMenuUpdate_Click"
+                                                Header="{x:Static resx:ResUI.RailSubUpdateAllDirect}"
+                                                IsVisible="{Binding Id, Converter={x:Static StringConverters.IsNullOrEmpty}}"
+                                                Tag="direct" />
+                                            <MenuItem
+                                                Click="RailSubMenuUpdate_Click"
+                                                Header="{x:Static resx:ResUI.RailSubUpdateAllProxy}"
+                                                IsVisible="{Binding Id, Converter={x:Static StringConverters.IsNullOrEmpty}}"
+                                                Tag="proxy" />
                                         </ContextMenu>
                                     </Border.ContextMenu>
                                     <TextBlock Text="{Binding Remarks}" TextTrimming="CharacterEllipsis" />

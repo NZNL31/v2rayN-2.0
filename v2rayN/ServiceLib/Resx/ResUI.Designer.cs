@@ -5636,5 +5636,38 @@ namespace ServiceLib.Resx {
                 return ResourceManager.GetString("RailSubUpdateAll", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   查找类似 Update this subscription (direct) 的本地化字符串。
+        /// </summary>
+        public static string RailSubUpdateDirect {
+            get {
+                return ResourceManager.GetString("RailSubUpdateDirect", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   查找类似 Update this subscription (via proxy) 的本地化字符串。
+        /// </summary>
+        public static string RailSubUpdateProxy {
+            get {
+                return ResourceManager.GetString("RailSubUpdateProxy", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   查找类似 Update all subscriptions (direct) 的本地化字符串。
+        /// </summary>
+        public static string RailSubUpdateAllDirect {
+            get {
+                return ResourceManager.GetString("RailSubUpdateAllDirect", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   查找类似 Update all subscriptions (via proxy) 的本地化字符串。
+        /// </summary>
+        public static string RailSubUpdateAllProxy {
+            get {
+                return ResourceManager.GetString("RailSubUpdateAllProxy", resourceCulture);
+            }
+        }
     }
 }
