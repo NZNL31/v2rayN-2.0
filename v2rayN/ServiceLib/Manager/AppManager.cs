@@ -98,12 +98,10 @@ public sealed class AppManager
         {
             try
             {
-                Global.BootMark("warmup start");
                 // 与 ProfileModels 完全同构的查询（含 SubItem 关联），把两个模型都预热掉
                 await SQLiteHelper.Instance.QueryAsync<ProfileItemModel>(
                     @"select a.IndexId, a.ConfigType, a.Remarks, a.Address, a.Port, a.Network, a.StreamSecurity, a.Subid, b.remarks as subRemarks
                       from ProfileItem a left join SubItem b on a.subid = b.id limit 1");
-                Global.BootMark("warmup done");
             }
             catch (Exception ex)
             {

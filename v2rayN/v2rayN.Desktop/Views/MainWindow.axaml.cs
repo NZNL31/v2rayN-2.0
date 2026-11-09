@@ -172,7 +172,6 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
         }
 
         AddHelpMenuItem();
-        Global.BootMark("MainWindow ctor done");
     }
 
 
@@ -297,7 +296,6 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
     protected override void OnLoaded(object? sender, RoutedEventArgs e)
     {
         base.OnLoaded(sender, e);
-        Global.BootMark("MainWindow OnLoaded");
 
         if (_config.UiItem.AutoHideStartup)
         {

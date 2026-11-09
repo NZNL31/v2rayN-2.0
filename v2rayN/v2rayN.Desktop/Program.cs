@@ -45,14 +45,12 @@ internal class Program
             }
         }
 
-        Global.BootMark("before InitApp");
         if (!AppManager.Instance.InitApp())
         {
             return false;
         }
 
         AppManager.Instance.WindowDialog = new WindowDialog();
-        Global.BootMark("after InitApp");
         return true;
     }
 

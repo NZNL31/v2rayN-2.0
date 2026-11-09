@@ -3,11 +3,6 @@
 public class Global
 {
     public const string AppName = "v2rayN";
-
-    /// <summary>启动耗时埋点（临时，用于定位启动慢的环节）</summary>
-    private static readonly System.Diagnostics.Stopwatch _bootSw = System.Diagnostics.Stopwatch.StartNew();
-    public static void BootMark(string tag) => Logging.SaveLog($"[boot] {_bootSw.ElapsedMilliseconds}ms  {tag}");
-
     /// <summary>本定制分支的仓库（自更新与发布都走这里）</summary>
     public const string ForkRepo = "NZNL31/v2rayN-2.0";
 
