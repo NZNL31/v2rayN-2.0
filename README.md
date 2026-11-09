@@ -2,9 +2,13 @@
 
 基于 [v2rayN](https://github.com/2dust/v2rayN) **7.25.6** 的界面重制分支：只改界面与少量交互，**不动内核、不动协议实现**，可直接替换官方 exe 使用。
 
-> 本仓库不包含任何节点、订阅或配置数据；截图中的订阅分组与节点信息已打码。
+当前版本 **2.0.0** ｜ [下载](https://github.com/NZNL31/v2rayN-2.0/releases/latest) ｜ [界面示例](示例.md)
 
-![主界面](docs/screenshot-main.png)
+> 本仓库不包含任何节点、订阅或配置数据；截图中出现的节点仅为演示用途。
+
+![浅色主题](docs/example-light.png)
+
+![深色主题](docs/example-dark.png)
 
 > 更多界面细节（含深色主题）见 [示例.md](示例.md)
 
