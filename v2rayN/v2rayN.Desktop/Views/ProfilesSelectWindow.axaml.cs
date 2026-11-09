@@ -1,4 +1,4 @@
-using Avalonia.VisualTree;
+﻿using Avalonia.VisualTree;
 using v2rayN.Desktop.Base;
 
 namespace v2rayN.Desktop.Views;
@@ -113,6 +113,18 @@ public partial class ProfilesSelectWindow : WindowBase<ProfilesSelectViewModel>
         }
     }
 
+    /// <summary>过滤框回车：应用过滤并刷新列表（不自动选中、不关闭）</summary>
+    private void TxtServerFilter_KeyDown(object? sender, KeyEventArgs e)
+    {
+        if (e.Key is not (Key.Enter or Key.Return))
+        {
+            return;
+        }
+
+        e.Handled = true;
+        ViewModel?.RefreshServers();
+    }
+
     private void BtnAutofitColumnWidth_Click(object? sender, RoutedEventArgs e)
     {
         AutofitColumnWidth();
@@ -132,11 +144,4 @@ public partial class ProfilesSelectWindow : WindowBase<ProfilesSelectViewModel>
         }
     }
 
-    private void TxtServerFilter_KeyDown(object? sender, KeyEventArgs e)
-    {
-        if (e.Key is Key.Enter or Key.Return)
-        {
-            ViewModel?.RefreshServers();
-        }
-    }
 }

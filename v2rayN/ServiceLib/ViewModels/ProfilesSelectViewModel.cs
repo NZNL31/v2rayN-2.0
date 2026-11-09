@@ -1,4 +1,4 @@
-namespace ServiceLib.ViewModels;
+﻿namespace ServiceLib.ViewModels;
 
 public partial class ProfilesSelectViewModel : MyReactiveObject, ICloseable
 {
@@ -138,11 +138,18 @@ public partial class ProfilesSelectViewModel : MyReactiveObject, ICloseable
     private async Task ServerFilterChanged()
     {
         _serverFilter = ServerFilter;
-        if (_serverFilter.IsNullOrEmpty())
+
+        // 防抖：连续输入只在停顿后查一次
+        await Task.Delay(220);
+        if (_serverFilter != ServerFilter)
         {
-            await RefreshServers();
+            return;
         }
+
+        await RefreshServers();
     }
+
+
 
     public async Task RefreshServers()
     {

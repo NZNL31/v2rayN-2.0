@@ -48,22 +48,25 @@
                     Margin="{StaticResource Margin4}"
                     ColumnDefinitions="*,Auto,Auto"
                     DockPanel.Dock="Top">
-                    <!--  分组：单行横向滚动，不再换行挤压表格  -->
-                    <ListBox
-                        x:Name="lstGroup"
+                    <!--  分组：单行 + 常显横向滚动条（该 ListBox 主题自带滚动条不显示，所以外面套一层）  -->
+                    <ScrollViewer
                         Grid.Column="0"
-                        Margin="{StaticResource MarginLr4}"
-                        DisplayMemberBinding="{Binding Remarks}"
-                        ItemsSource="{Binding SubItems}"
-                        ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                        ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                        Theme="{DynamicResource ButtonRadioGroupListBox}">
-                        <ListBox.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal" />
-                            </ItemsPanelTemplate>
-                        </ListBox.ItemsPanel>
-                    </ListBox>
+                        AllowAutoHide="False"
+                        HorizontalScrollBarVisibility="Visible"
+                        VerticalScrollBarVisibility="Disabled">
+                        <ListBox
+                            x:Name="lstGroup"
+                            Margin="{StaticResource MarginLr4}"
+                            DisplayMemberBinding="{Binding Remarks}"
+                            ItemsSource="{Binding SubItems}"
+                            Theme="{DynamicResource ButtonRadioGroupListBox}">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                        </ListBox>
+                    </ScrollViewer>
 
                     <Button
                         x:Name="btnAutofitColumnWidth"
@@ -82,6 +85,7 @@
                         Width="240"
                         Margin="{StaticResource MarginLr4}"
                         VerticalContentAlignment="Center"
+                        KeyDown="TxtServerFilter_KeyDown"
                         PlaceholderText="{x:Static resx:ResUI.MsgServerTitle}"
                         Text="{Binding ServerFilter, Mode=TwoWay}"
                         ToolTip.Tip="{x:Static resx:ResUI.MsgServerTitle}" />

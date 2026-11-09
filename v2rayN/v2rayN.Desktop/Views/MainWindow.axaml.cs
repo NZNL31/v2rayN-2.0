@@ -298,6 +298,7 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
         base.OnLoaded(sender, e);
 
 
+
         if (_config.UiItem.AutoHideStartup)
         {
             ShowHideWindow(false);
