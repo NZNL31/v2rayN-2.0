@@ -130,8 +130,9 @@ foreach ($file in @($Zip, "$Zip.sha256")) {
     $name = Split-Path $file -Leaf
     Info "上传 $name …"
     $up = @{ Authorization = "Bearer $token"; 'User-Agent' = 'dsh'; Accept = 'application/vnd.github+json' }
-    $r = Invoke-WebRequest -Uri "https://uploads.github.com/repos/$Owner/$RepoName/releases/$($rel.id)/assets?name=$name" `
-        -Method Post -Headers $up -Proxy $Proxy -TimeoutSec 1800 -UseBasicParsing -InFile $file -ContentType 'application/octet-stream'
+    $upl = @{ Uri = "https://uploads.github.com/repos/$Owner/$RepoName/releases/$($rel.id)/assets?name=$name"; Method = 'Post'; Headers = $up; TimeoutSec = 1800; UseBasicParsing = $true; InFile = $file; ContentType = 'application/octet-stream' }
+    if ($NoProxy) { $upl.NoProxy = $true } else { $upl.Proxy = $Proxy }
+    $r = Invoke-WebRequest @upl
     $a = $r.Content | ConvertFrom-Json
     Info "  -> $($a.name) $([math]::Round($a.size / 1MB, 1)) MB  state=$($a.state)"
 }
