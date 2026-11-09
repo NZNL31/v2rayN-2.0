@@ -4,6 +4,8 @@ public class WindowBase<TViewModel> : ReactiveWindow<TViewModel> where TViewMode
 {
     public WindowBase()
     {
+        // XAML 里的 Width/Height 会在 InitializeComponent 时写入，所以要在初始化完成后再套用保存尺寸
+        Initialized += (_, _) => ApplySavedSizeEarly();
         Loaded += OnLoaded;
         Loaded += (s, e) =>
         {
@@ -12,6 +14,32 @@ public class WindowBase<TViewModel> : ReactiveWindow<TViewModel> where TViewMode
                 CanMinimize = false;
             }
         };
+    }
+
+    /// <summary>在窗口创建时就套用保存的尺寸，避免先以默认尺寸出现再跳变</summary>
+    private void ApplySavedSizeEarly()
+    {
+        try
+        {
+            var sizeItem = ConfigHandler.GetWindowSizeItem(AppManager.Instance.Config, GetType().Name);
+            if (sizeItem is null || sizeItem.Width <= 0 || sizeItem.Height <= 0)
+            {
+                return;
+            }
+
+            Width = sizeItem.Width;
+            Height = sizeItem.Height;
+        }
+        catch (Exception ex)
+        {
+            Logging.SaveLog("WindowBase.ApplySavedSizeEarly", ex);
+        }
+    }
+
+    protected override void OnOpened(EventArgs e)
+    {
+        base.OnOpened(e);
+        ApplySavedSizeEarly();
     }
 
     private void ReactiveWindowBase_Closed(object? sender, EventArgs e)

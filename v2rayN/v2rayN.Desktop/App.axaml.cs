@@ -50,6 +50,16 @@ public partial class App : Application
                 Logging.SaveLog("Startup background", ex);
             }
 
+            // 首帧渲染前先隐藏：否则会先看到一块白底（DWM 在首次绘制前画的），再跳成真实界面
+            mainWindow.Opacity = 0;
+            void Reveal()
+            {
+                mainWindow.LayoutUpdated -= OnFirstLayout;
+                mainWindow.Opacity = 1;
+            }
+            void OnFirstLayout(object? s, EventArgs e) => Reveal();
+            mainWindow.LayoutUpdated += OnFirstLayout;
+
             desktop.MainWindow = mainWindow;
 
             if (OperatingSystem.IsMacOS())
