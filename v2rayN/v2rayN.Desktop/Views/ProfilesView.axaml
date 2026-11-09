@@ -494,6 +494,56 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
+                    <!--  行内快捷操作：悬停时右侧浮出 编辑 / 测速 / 复制 / 删除  -->
+                    <DataGridTemplateColumn
+                        Width="104"
+                        Tag="RowActions"
+                        CanUserResize="False"
+                        CanUserSort="False">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel
+                                    Margin="0,0,4,0"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal"
+                                    Spacing="1">
+                                    <Button
+                                        Classes="RowAction"
+                                        Tag="edit"
+                                        Click="RowAction_Click"
+                                        Theme="{DynamicResource HeaderIconButton}"
+                                        ToolTip.Tip="{x:Static resx:ResUI.menuEditServer}">
+                                        <PathIcon Width="13" Height="13" Data="{StaticResource SemiIconEdit}" />
+                                    </Button>
+                                    <Button
+                                        Classes="RowAction"
+                                        Tag="ping"
+                                        Click="RowAction_Click"
+                                        Theme="{DynamicResource HeaderIconButton}"
+                                        ToolTip.Tip="{x:Static resx:ResUI.menuRealPingServer}">
+                                        <PathIcon Width="13" Height="13" Data="{StaticResource SemiIconBolt}" />
+                                    </Button>
+                                    <Button
+                                        Classes="RowAction"
+                                        Tag="copy"
+                                        Click="RowAction_Click"
+                                        Theme="{DynamicResource HeaderIconButton}"
+                                        ToolTip.Tip="{x:Static resx:ResUI.menuCopyServer}">
+                                        <PathIcon Width="13" Height="13" Data="{StaticResource building_copy}" />
+                                    </Button>
+                                    <Button
+                                        Classes="RowAction"
+                                        Tag="delete"
+                                        Click="RowAction_Click"
+                                        Theme="{DynamicResource HeaderIconButton}"
+                                        ToolTip.Tip="{x:Static resx:ResUI.menuRemoveServer}">
+                                        <PathIcon Width="13" Height="13" Data="{StaticResource building_delete}" />
+                                    </Button>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                     <DataGridTemplateColumn
                         Header="{x:Static resx:ResUI.LvTestIpInfo}"
                         SortMemberPath="IpInfo"

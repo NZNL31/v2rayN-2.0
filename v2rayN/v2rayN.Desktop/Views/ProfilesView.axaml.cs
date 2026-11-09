@@ -177,7 +177,7 @@ public partial class ProfilesView : ReactiveUserControl<ProfilesViewModel>
     private static readonly string[] OptionalColumns =
     [
         "SubRemarks", "Network", "StreamSecurity", "IpInfo",
-        "TodayUp", "TodayDown", "TotalUp", "TotalDown", "Port", "SpeedVal", "DelayVal"
+        "TodayUp", "TodayDown", "TotalUp", "TotalDown", "RowActions", "Port", "SpeedVal", "DelayVal"
     ];
 
     /// <summary>被自动隐藏的列（不代表用户意愿）</summary>
@@ -422,6 +422,54 @@ public partial class ProfilesView : ReactiveUserControl<ProfilesViewModel>
         }
     }
 
+    /// <summary>
+    /// 行内快捷操作：编辑 / 测速 / 复制 / 删除。
+    /// 这些命令的 CanExecute 依赖 ViewModel.SelectedProfile，所以先把选中项同步给 VM，
+    /// 再延后一帧执行（给 ReactiveUI 的 CanExecute 一次刷新机会）。
+    /// </summary>
+    private void RowAction_Click(object? sender, RoutedEventArgs e)
+    {
+        if (sender is not Button { DataContext: ProfileItemModel item } btn || ViewModel is null)
+        {
+            return;
+        }
+
+        ViewModel.SelectedProfile = item;
+        lstProfiles.SelectedItem = item;
+
+        var tag = btn.Tag as string;
+        Dispatcher.UIThread.Post(() => DoRowAction(tag), DispatcherPriority.Background);
+    }
+
+    private void DoRowAction(string? tag)
+    {
+        try
+        {
+            Logging.SaveLog($"row action: {tag}");
+            switch (tag)
+            {
+                case "edit":
+                    ViewModel?.EditServerAsync();
+                    break;
+                case "ping":
+                    ViewModel?.ServerSpeedtest(ESpeedActionType.Realping);
+                    break;
+                case "copy":
+                    if (ViewModel?.CopyServerCmd is { } copyCmd)
+                    {
+                        ((System.Windows.Input.ICommand)copyCmd).Execute(null);
+                    }
+                    break;
+                case "delete":
+                    ViewModel?.RemoveServerAsync();
+                    break;
+            }
+        }
+        catch (Exception ex)
+        {
+            Logging.SaveLog(_tag, ex);
+        }
+    }
     #region Event
 
     public async Task ShareServer(string url)

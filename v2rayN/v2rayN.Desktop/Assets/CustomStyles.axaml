@@ -218,4 +218,21 @@
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
+    <!--  行内快捷操作按钮：平时透明，行悬停时浮现  -->
+    <Style Selector="Button.RowAction">
+        <Setter Property="Width" Value="22" />
+        <Setter Property="Height" Value="22" />
+        <Setter Property="Opacity" Value="0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+    <Style Selector="DataGridRow:pointerover Button.RowAction">
+        <Setter Property="Opacity" Value="1" />
+    </Style>
+    <Style Selector="Button.RowAction PathIcon">
+        <Setter Property="Foreground" Value="{DynamicResource AppTextSecondary}" />
+    </Style>
+    <Style Selector="Button.RowAction:pointerover PathIcon">
+        <Setter Property="Foreground" Value="{DynamicResource AppTextPrimary}" />
+    </Style>
+
 </Styles>
