@@ -25,25 +25,6 @@ public partial class MainWindow
     }
 
     /// <summary>左栏「订阅分组」小标题右侧的 ⋯：弹出订阅分组菜单</summary>
-    /// <summary>＋ 菜单里的「订阅分组设置」：展开订阅菜单（添加订阅/更新全部/删除分组…）</summary>
-    private void MenuSubSettings_Click(object? sender, RoutedEventArgs e)
-    {
-        try
-        {
-            ShowMenuAt(menuSubscription);
-        }
-        catch (Exception ex)
-        {
-            Logging.SaveLog("RailSubMenu", ex);
-        }
-    }
-
-    private void BtnRailSubMenu_Click(object? sender, RoutedEventArgs e)
-    {
-        _sideMenuAnchor = sender as Control;
-        ShowMenuAt(menuSubscription, PlacementMode.BottomEdgeAlignedRight);
-    }
-
     /// <summary>左侧栏「配置项」按钮：展开原配置项菜单</summary>
     public void OpenConfigMenu(Control? anchor = null)
     {

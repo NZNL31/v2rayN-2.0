@@ -491,10 +491,7 @@
                                     Text="{x:Static resx:ResUI.menuServers}"
                                     VerticalAlignment="Center" />
                             </MenuItem.Header>
-                            <MenuItem
-                                x:Name="menuSubSettings"
-                                Click="MenuSubSettings_Click"
-                                Header="{x:Static resx:ResUI.menuSubscription}" />
+                            <MenuItem x:Name="menuSubSettingTop" Header="{x:Static resx:ResUI.menuSubSetting}" />
                             <Separator />
                             <MenuItem
                                 x:Name="menuAddServerViaClipboard"
@@ -527,31 +524,6 @@
 
                         </MenuItem>
 
-                        <MenuItem x:Name="menuSubscription" IsVisible="False">
-                            <MenuItem.Header>
-                                <StackPanel
-                                    Orientation="Horizontal"
-                                    Spacing="10">
-                                    <!--  实心文件夹  -->
-                                    <Path
-                                        Width="19"
-                                        Height="19"
-                                        Data="M2.6,6.0 A1.9,1.9 0 0 1 4.5,4.1 H8.2 L10.2,6.2 H15.4 A1.9,1.9 0 0 1 17.3,8.1 V14.4 A1.9,1.9 0 0 1 15.4,16.3 H4.5 A1.9,1.9 0 0 1 2.6,14.4 Z"
-                                        Fill="{DynamicResource AppTextPrimary}"
-                                        Stretch="None"
-                                        VerticalAlignment="Center" />
-                                    <TextBlock
-                                        Foreground="{DynamicResource AppTextPrimary}"
-                                        Text="{x:Static resx:ResUI.menuSubscription}"
-                                        VerticalAlignment="Center" />
-                                </StackPanel>
-                            </MenuItem.Header>
-                            <MenuItem x:Name="menuSubSetting" Header="{x:Static resx:ResUI.menuSubSetting}" />
-                            <Separator />
-                            <MenuItem x:Name="menuSubUpdate" Header="{x:Static resx:ResUI.menuSubUpdate}" />
-                            <MenuItem x:Name="menuSubUpdateViaProxy" Header="{x:Static resx:ResUI.menuSubUpdateViaProxy}" />
-
-                        </MenuItem>
             <MenuItem x:Name="menuSetting" Header="{x:Static resx:ResUI.menuSetting}">
                 <MenuItem x:Name="menuOptionSetting" Header="{x:Static resx:ResUI.menuOptionSetting}" />
                 <MenuItem x:Name="menuRoutingSetting" Header="{x:Static resx:ResUI.menuRoutingSetting}" />
