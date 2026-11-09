@@ -119,7 +119,7 @@ if (-not $token) {
 
 $h = @{ Authorization = "Bearer $token"; 'User-Agent' = 'dsh'; Accept = 'application/vnd.github+json' }
 $iwr = @{ Headers = $h; TimeoutSec = 120; UseBasicParsing = $true }
-if (-not $NoProxy) { $iwr.Proxy = $Proxy }
+if ($NoProxy) { $iwr.NoProxy = $true } else { $iwr.Proxy = $Proxy }
 
 $body = if ($Notes) { $Notes } else { "v2rayN $Version（界面重制）`n`n- 基于上游 v2rayN 7.25.6`n- 完整说明见 README.md / 示例.md" }
 $payload = @{ tag_name = $Version; target_commitish = 'main'; name = "v2rayN $Version"; body = $body; draft = [bool]$Draft; prerelease = $false } | ConvertTo-Json -Depth 5
