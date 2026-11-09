@@ -88,6 +88,11 @@
             <SolidColorBrush x:Key="AppBadgeBg" Color="#F0F0F0" />
             <SolidColorBrush x:Key="AppSidebarBg" Color="#EFEFEF" />
             <SolidColorBrush x:Key="AppHeaderSeparator" Color="#E3E7ED" />
+
+            <!--  DataGrid 行选中：中性灰，覆盖主题自带的蓝色选中  -->
+            <SolidColorBrush x:Key="DataGridRowSelectedBackground" Color="#E3E3E3" />
+            <SolidColorBrush x:Key="DataGridRowSelectedHoveredBackground" Color="#DCDCDC" />
+            <SolidColorBrush x:Key="DataGridRowSelectedUnfocusedBackground" Color="#E8E8E8" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
             <SolidColorBrush x:Key="DockerBlue" Color="#1D63ED" />
@@ -106,6 +111,11 @@
             <SolidColorBrush x:Key="AppBadgeBg" Color="#2A3039" />
             <SolidColorBrush x:Key="AppSidebarBg" Color="#1A1D22" />
             <SolidColorBrush x:Key="AppHeaderSeparator" Color="#2C3138" />
+
+            <!--  DataGrid 行选中：中性灰，覆盖主题自带的蓝色选中  -->
+            <SolidColorBrush x:Key="DataGridRowSelectedBackground" Color="#2C333D" />
+            <SolidColorBrush x:Key="DataGridRowSelectedHoveredBackground" Color="#343C48" />
+            <SolidColorBrush x:Key="DataGridRowSelectedUnfocusedBackground" Color="#272C35" />
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 </ResourceDictionary>
