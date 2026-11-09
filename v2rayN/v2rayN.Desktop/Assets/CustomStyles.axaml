@@ -1,4 +1,4 @@
-<Styles
+﻿<Styles
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:chrome="clr-namespace:v2rayN.Desktop.Views.Chrome">
@@ -9,5 +9,200 @@
     -->
     <Style Selector="Window">
         <Setter Property="chrome:WindowChromeBehavior.TitleBar" Value="True" />
+    </Style>
+
+
+    <!--  ================= 以下为定制样式（原 GlobalStyles 里的改造部分）=================  -->
+
+    <!--  滚动条与 ScrollViewer 行为  -->
+    <Style Selector="ScrollViewer">
+        <Setter Property="AllowAutoHide" Value="True" />
+    </Style>
+
+    <!--  滚动条：细一点、去掉两端箭头、平时淡出，悬停/拖动才明显  -->
+    <Style Selector="ScrollBar">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Opacity" Value="0.35" />
+    </Style>
+
+    <Style Selector="ScrollBar:pointerover, ScrollBar:pressed">
+        <Setter Property="Opacity" Value="1" />
+    </Style>
+
+    <Style Selector="ScrollBar:vertical">
+        <Setter Property="Width" Value="8" />
+        <Setter Property="MinWidth" Value="8" />
+    </Style>
+
+    <Style Selector="ScrollBar:horizontal">
+        <Setter Property="Height" Value="8" />
+        <Setter Property="MinHeight" Value="8" />
+    </Style>
+
+    <Style Selector="ScrollBar /template/ RepeatButton">
+        <Setter Property="IsVisible" Value="False" />
+        <Setter Property="Width" Value="0" />
+        <Setter Property="Height" Value="0" />
+    </Style>
+
+
+    <!--  ================= Docker Desktop 风格改造 =================  -->
+
+    <!--  导轨一级菜单（配置项 / 订阅分组）：字号略大、左对齐、行距紧凑  -->
+    <Style Selector="Menu#mainMenu > MenuItem">
+        <Setter Property="Foreground" Value="{DynamicResource AppTextPrimary}" />
+        <Setter Property="FontSize" Value="14.5" />
+        <Setter Property="Padding" Value="14,4" />
+        <Setter Property="Margin" Value="0,0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Menu#mainMenu > MenuItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource AppNavHover}" />
+        <Setter Property="Foreground" Value="{DynamicResource AppTextPrimary}" />
+    </Style>
+
+    <Style Selector="Border#appHeader PathIcon">
+        <Setter Property="Foreground" Value="{DynamicResource AppTextPrimary}" />
+    </Style>
+
+    <Style Selector="Border#appHeader Button.IconButton PathIcon">
+        <Setter Property="Foreground" Value="{DynamicResource AppTextPrimary}" />
+    </Style>
+
+    <!--  顶栏右侧图标按钮（侧栏开关 / 窗口控制）：统一透明底 + 6 圆角悬停  -->
+    <Style Selector="Button.HeaderIcon">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Button.HeaderIcon Path">
+        <Setter Property="Stroke" Value="{DynamicResource AppTextPrimary}" />
+    </Style>
+
+    <!--  关闭按钮悬停：图标转白（红底由 HeaderCloseButton 主题给）  -->
+    <Style Selector="Button#btnWinClose:pointerover Path, Button#btnWinClose:pressed Path">
+        <Setter Property="Stroke" Value="#FFFFFF" />
+    </Style>
+
+    <!--  底部状态栏：描边胶囊按钮 / 下拉  -->
+    <Style Selector="Border.StatusPill">
+        <Setter Property="Height" Value="28" />
+        <Setter Property="Padding" Value="11,0" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Background" Value="{DynamicResource AppCardBg}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource AppCardBorder}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="ComboBox.StatusCombo">
+        <Setter Property="Height" Value="28" />
+        <Setter Property="MinHeight" Value="28" />
+        <Setter Property="MinWidth" Value="96" />
+        <Setter Property="Padding" Value="10,0" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Background" Value="{DynamicResource AppCardBg}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource AppCardBorder}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="12.5" />
+    </Style>
+
+    <!--  左侧导航列表（订阅分组）  -->
+    <Style Selector="ListBox#lstGroup">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+    </Style>
+
+    <!--  网易云风格：未选中灰图标+深字，选中为品牌色实心胶囊+白字  -->
+    <Style Selector="ListBox#lstGroup ListBoxItem">
+        <Setter Property="Padding" Value="10,10" />
+        <Setter Property="Margin" Value="0,2" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource AppTextPrimary}" />
+    </Style>
+
+    <Style Selector="ListBox#lstGroup ListBoxItem PathIcon">
+        <Setter Property="Foreground" Value="{DynamicResource AppTextSecondary}" />
+    </Style>
+
+    <Style Selector="ListBox#lstGroup ListBoxItem:pointerover">
+        <Setter Property="Background" Value="{DynamicResource AppNavHover}" />
+    </Style>
+
+    <Style Selector="ListBox#lstGroup ListBoxItem:selected">
+        <Setter Property="Background" Value="{DynamicResource AppNavSelected}" />
+        <Setter Property="Foreground" Value="{DynamicResource AppTextPrimary}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style Selector="ListBox#lstGroup ListBoxItem:selected PathIcon">
+        <Setter Property="Foreground" Value="{DynamicResource AppTextPrimary}" />
+    </Style>
+
+    <Style Selector="ListBox#lstGroup ListBoxItem:selected TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource AppTextPrimary}" />
+    </Style>
+
+    <!--  输入框：白底圆角  -->
+    <Style Selector="TextBox">
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="MinHeight" Value="30" />
+    </Style>
+
+    <Style Selector="TextBox#txtServerFilter, TextBox#cmbMsgFilter">
+        <Setter Property="Background" Value="{DynamicResource AppCardBg}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource AppCardBorder}" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
+    <!--  底部日志区的页签：细一点、选中蓝字  -->
+    <Style Selector="TabStripItem">
+        <Setter Property="FontSize" Value="12.5" />
+        <Setter Property="Padding" Value="10,6" />
+    </Style>
+
+    <Style Selector="TabStripItem:selected">
+        <Setter Property="Foreground" Value="{DynamicResource AppTextPrimary}" />
+    </Style>
+
+    <!--  表格：斑马纹极简（无竖线 / 浅灰表头小字 / 隔行底色）  -->
+    <Style Selector="DataGrid">
+        <Setter Property="GridLinesVisibility" Value="None" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="RowHeight" Value="38" />
+    </Style>
+
+    <Style Selector="DataGridColumnHeader">
+        <Setter Property="Background" Value="{DynamicResource AppCardBg}" />
+        <Setter Property="Foreground" Value="{DynamicResource AppTextSecondary}" />
+        <Setter Property="FontSize" Value="11.5" />
+        <Setter Property="Padding" Value="8,10" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="BorderBrush" Value="{DynamicResource AppCardBorder}" />
+    </Style>
+
+    <!--  斑马纹：偶数行略深一档，深浅主题都跟着走  -->
+    <Style Selector="DataGridRow:nth-child(even)">
+        <Setter Property="Background" Value="{DynamicResource AppRowAltBg}" />
+    </Style>
+    <Style Selector="DataGridRow:pointerover">
+        <Setter Property="Background" Value="{DynamicResource AppRowHover}" />
+    </Style>
+
+    <Style Selector="DataGridRow:selected">
+        <Setter Property="Background" Value="{DynamicResource AppNavSelected}" />
     </Style>
 </Styles>
