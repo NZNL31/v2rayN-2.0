@@ -39,9 +39,10 @@
                     <TextBlock
                         x:Name="txtAppLogo"
                         Grid.Column="0"
+                        Margin="0,6,0,0"
                         VerticalAlignment="Center"
                         FontFamily="Segoe Script, Segoe UI, Microsoft YaHei UI"
-                        FontSize="22"
+                        FontSize="25"
                         FontWeight="Bold"
                         Foreground="{DynamicResource AppTextPrimary}"
                         LetterSpacing="0"
