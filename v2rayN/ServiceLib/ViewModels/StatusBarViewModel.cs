@@ -1,4 +1,4 @@
-namespace ServiceLib.ViewModels;
+﻿namespace ServiceLib.ViewModels;
 
 public partial class StatusBarViewModel : MyReactiveObject
 {
@@ -95,11 +95,19 @@ public partial class StatusBarViewModel : MyReactiveObject
     [Reactive]
     public partial string SpeedDirectDisplay { get; set; }
 
+    /// <summary>状态栏用的紧凑速率（↑ / ↓），不跟随「显示实时速率」开关，状态栏始终可见</summary>
+    [Reactive]
+    public partial string SpeedCompactDisplay { get; set; }
+
     [Reactive]
     public partial bool EnableTun { get; set; }
 
     [Reactive]
     public partial bool BlIsNonWindows { get; set; }
+
+    /// <summary>速率文案压缩：254.0 KB → 254 KB，0.0 B → 0 B</summary>
+    private static string Compact(long amount) =>
+        Utils.HumanFy(amount).Replace(".0 ", " ");
 
     #endregion UI
 
@@ -484,31 +492,33 @@ public partial class StatusBarViewModel : MyReactiveObject
 
     public async Task InboundDisplayStatus()
     {
-        StringBuilder sb = new();
-        sb.Append($"[{EInboundProtocol.mixed}:{AppManager.Instance.GetLocalPort(EInboundProtocol.socks)}");
+        // 状态栏空间有限：只显示端口号，协议名（mixed）省略
+        var port = AppManager.Instance.GetLocalPort(EInboundProtocol.socks).ToString();
         if (_config.Inbound.First().SecondLocalPortEnabled)
         {
-            sb.Append($",{AppManager.Instance.GetLocalPort(EInboundProtocol.socks2)}");
+            port += $",{AppManager.Instance.GetLocalPort(EInboundProtocol.socks2)}";
         }
-        sb.Append(']');
-        InboundDisplay = $"{ResUI.LabLocal}:{sb}";
+        InboundDisplay = $"{ResUI.LabLocal} {port}";
 
         if (_config.Inbound.First().AllowLANConn)
         {
             var lan = _config.Inbound.First().NewPort4LAN
-                ? $"[{EInboundProtocol.mixed}:{AppManager.Instance.GetLocalPort(EInboundProtocol.socks3)}]"
-                : $"[{EInboundProtocol.mixed}:{AppManager.Instance.GetLocalPort(EInboundProtocol.socks)}]";
-            InboundLanDisplay = $"{ResUI.LabLAN}:{lan}";
+                ? AppManager.Instance.GetLocalPort(EInboundProtocol.socks3).ToString()
+                : port;
+            InboundLanDisplay = $"{ResUI.LabLAN} {lan}";
         }
         else
         {
-            InboundLanDisplay = $"{ResUI.LabLAN}:{Global.None}";
+            InboundLanDisplay = $"{ResUI.LabLAN} {Global.None}";
         }
         await Task.CompletedTask;
     }
 
     public async Task UpdateStatistics(ServerSpeedItem update)
     {
+        // 状态栏的紧凑速率不受「显示实时速率」开关影响
+        SpeedCompactDisplay = $"↑{Compact(update.ProxyUp)} ↓{Compact(update.ProxyDown)}";
+
         if (!_config.GuiItem.DisplayRealTimeSpeed)
         {
             return;
@@ -532,6 +542,7 @@ public partial class StatusBarViewModel : MyReactiveObject
         }
         await Task.CompletedTask;
     }
+
 
     #endregion UI
 }

@@ -17,113 +17,378 @@
     Icon="/Assets/NotifyIcon1.ico"
     ShowInTaskbar="True"
     WindowStartupLocation="CenterScreen"
+    Background="{DynamicResource AppPageBg}"
+    SystemDecorations="None"
     mc:Ignorable="d">
-    <dialogHost:DialogHost CloseOnClickAway="True" DisableOpeningAnimation="True">
-        <DockPanel>
-            <DockPanel Margin="{StaticResource Margin8}" DockPanel.Dock="Top">
-                <ContentControl x:Name="conTheme" DockPanel.Dock="Right" />
-                <Menu Margin="{StaticResource Margin4}">
-                    <MenuItem Header="{x:Static resx:ResUI.menuServers}">
-                        <MenuItem
-                            x:Name="menuAddServerViaClipboard"
-                            Header="{x:Static resx:ResUI.menuAddServerViaClipboard}"
-                            InputGesture="Ctrl+V" />
-                        <MenuItem
-                            x:Name="menuAddServerViaScan"
-                            Header="{x:Static resx:ResUI.menuAddServerViaScan}"
-                            InputGesture="Ctrl+S" />
-                        <MenuItem x:Name="menuAddServerViaImage" Header="{x:Static resx:ResUI.menuAddServerViaImage}" />
-                        <Separator />
-                        <MenuItem x:Name="menuAddCustomServer" Header="{x:Static resx:ResUI.menuAddCustomServer}" />
-                        <MenuItem x:Name="menuAddPolicyGroupServer" Header="{x:Static resx:ResUI.menuAddPolicyGroupServer}" />
-                        <MenuItem x:Name="menuAddProxyChainServer" Header="{x:Static resx:ResUI.menuAddProxyChainServer}" />
-                        <MenuItem x:Name="menuAddCustomOutboundServer" Header="{x:Static resx:ResUI.menuAddCustomOutboundServer}" />
-                        <Separator />
-                        <MenuItem x:Name="menuAddVmessServer" Header="{x:Static resx:ResUI.menuAddVmessServer}" />
-                        <MenuItem x:Name="menuAddVlessServer" Header="{x:Static resx:ResUI.menuAddVlessServer}" />
-                        <MenuItem x:Name="menuAddShadowsocksServer" Header="{x:Static resx:ResUI.menuAddShadowsocksServer}" />
-                        <MenuItem x:Name="menuAddTrojanServer" Header="{x:Static resx:ResUI.menuAddTrojanServer}" />
-                        <MenuItem x:Name="menuAddHysteria2Server" Header="{x:Static resx:ResUI.menuAddHysteria2Server}" />
-                        <MenuItem x:Name="menuAddWireguardServer" Header="{x:Static resx:ResUI.menuAddWireguardServer}" />
-                        <MenuItem x:Name="menuAddMasqueServer" Header="{x:Static resx:ResUI.menuAddMasqueServer}" />
-                        <MenuItem x:Name="menuAddSocksServer" Header="{x:Static resx:ResUI.menuAddSocksServer}" />
-                        <MenuItem x:Name="menuAddHttpServer" Header="{x:Static resx:ResUI.menuAddHttpServer}" />
-                        <Separator />
-                        <MenuItem x:Name="menuAddTuicServer" Header="{x:Static resx:ResUI.menuAddTuicServer}" />
-                        <MenuItem x:Name="menuAddAnytlsServer" Header="{x:Static resx:ResUI.menuAddAnytlsServer}" />
-                        <MenuItem x:Name="menuAddNaiveServer" Header="{x:Static resx:ResUI.menuAddNaiveServer}" />
-                    </MenuItem>
+    <Grid>
+        <dialogHost:DialogHost CloseOnClickAway="True" DisableOpeningAnimation="True">
+        <DockPanel Background="{DynamicResource AppPageBg}">
 
-                    <MenuItem Header="{x:Static resx:ResUI.menuSubscription}">
-                        <MenuItem x:Name="menuSubSetting" Header="{x:Static resx:ResUI.menuSubSetting}" />
-                        <Separator />
-                        <MenuItem x:Name="menuSubUpdate" Header="{x:Static resx:ResUI.menuSubUpdate}" />
-                        <MenuItem x:Name="menuSubUpdateViaProxy" Header="{x:Static resx:ResUI.menuSubUpdateViaProxy}" />
-                        <MenuItem x:Name="menuSubGroupUpdate" Header="{x:Static resx:ResUI.menuSubGroupUpdate}" />
-                        <MenuItem x:Name="menuSubGroupUpdateViaProxy" Header="{x:Static resx:ResUI.menuSubGroupUpdateViaProxy}" />
-                    </MenuItem>
+            <!--  Docker 风格顶栏：整条蓝底 + 白色文字菜单  -->
+            <Border
+                x:Name="appHeader"
+                Height="64"
+                Background="{DynamicResource AppSidebarBg}"
+                DockPanel.Dock="Top"
+                PointerPressed="Header_PointerPressed">
+                <Grid Margin="20,0,0,0" ColumnDefinitions="Auto,*,Auto,Auto,Auto">
 
-                    <MenuItem Header="{x:Static resx:ResUI.menuSetting}">
-                        <MenuItem x:Name="menuOptionSetting" Header="{x:Static resx:ResUI.menuOptionSetting}" />
-                        <MenuItem x:Name="menuRoutingSetting" Header="{x:Static resx:ResUI.menuRoutingSetting}" />
-                        <MenuItem x:Name="menuDNSSetting" Header="{x:Static resx:ResUI.menuDNSSetting}" />
-                        <MenuItem x:Name="menuFullConfigTemplate" Header="{x:Static resx:ResUI.menuFullConfigTemplate}" />
-                        <MenuItem
-                            x:Name="menuGlobalHotkeySetting"
-                            Header="{x:Static resx:ResUI.menuGlobalHotkeySetting}"
-                            IsVisible="{Binding BlIsWindows}" />
-                        <Separator />
-                        <MenuItem
-                            x:Name="menuRebootAsAdmin"
-                            Header="{x:Static resx:ResUI.menuRebootAsAdmin}"
-                            IsVisible="{Binding BlIsWindows}" />
-                        <MenuItem
-                            x:Name="menuSettingsSetUWP"
-                            Header="{x:Static resx:ResUI.TbSettingsSetUWP}"
-                            IsVisible="{Binding BlIsWindows}" />
-                        <MenuItem x:Name="menuClearServerStatistics" Header="{x:Static resx:ResUI.menuClearServerStatistics}" />
-                        <Separator />
-                        <MenuItem Header="{x:Static resx:ResUI.menuRegionalPresets}">
-                            <MenuItem x:Name="menuRegionalPresetsDefault" Header="{x:Static resx:ResUI.menuRegionalPresetsDefault}" />
-                            <MenuItem x:Name="menuRegionalPresetsRussia" Header="{x:Static resx:ResUI.menuRegionalPresetsRussia}" />
-                            <MenuItem x:Name="menuRegionalPresetsIran" Header="{x:Static resx:ResUI.menuRegionalPresetsIran}" />
-                        </MenuItem>
-                        <MenuItem x:Name="menuBackupAndRestore" Header="{x:Static resx:ResUI.menuBackupAndRestore}" />
-                        <MenuItem x:Name="menuOpenTheFileLocation" Header="{x:Static resx:ResUI.menuOpenTheFileLocation}" />
-                    </MenuItem>
+                    <!--  Logo 文字（无图标）：主名与版本号左对齐堆叠  -->
+                    <StackPanel
+                        Grid.Column="0"
+                        VerticalAlignment="Center"
+                        Spacing="1">
+                        <TextBlock
+                            FontFamily="Segoe Script, Segoe UI, Microsoft YaHei UI"
+                            FontSize="22"
+                            FontWeight="Bold"
+                            Foreground="{DynamicResource AppTextPrimary}"
+                            LetterSpacing="0"
+                            Text="v2rayN" />
+                        <TextBlock
+                            FontSize="10"
+                            Foreground="{DynamicResource AppTextSecondary}"
+                            LetterSpacing="0.6"
+                            Text="7.25.6" />
+                    </StackPanel>
 
-                    <MenuItem x:Name="menuHelp" Header="{x:Static resx:ResUI.menuHelp}">
-                        <MenuItem x:Name="menuCheckUpdate" Header="{x:Static resx:ResUI.menuCheckUpdate}" />
-                        <Separator />
-                    </MenuItem>
+                    <Button
+                        x:Name="btnNewUpdate"
+                        Grid.Column="1"
+                        Margin="12,0,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Content="{x:Static resx:ResUI.menuNewUpdate}"
+                        IsVisible="False" />
 
-                    <MenuItem x:Name="menuReload" Header="{x:Static resx:ResUI.menuReload}" />
+                    <!--  顶栏菜单：样式在 GlobalStyles.axaml 里统一改成白字  -->
 
-                    <MenuItem x:Name="menuPromotion" Header="{x:Static resx:ResUI.menuPromotion}" />
+                    <!--  设置 / 帮助（齿轮 / 纸飞机） + 侧边栏开关 + 主题按钮  -->
+                    <StackPanel
+                        Grid.Column="3"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+                        <Button
+                            x:Name="btnHeaderSetting"
+                            Classes="HeaderIcon"
+                            Theme="{DynamicResource HeaderIconButton}"
+                            Width="36"
+                            Height="32"
+                            Margin="0,0,2,0"
+                            Click="BtnHeaderSetting_Click"
+                            ToolTip.Tip="{x:Static resx:ResUI.menuSetting}">
+                            <PathIcon
+                                Width="16"
+                                Height="16"
+                                Data="{StaticResource SemiIconSetting}" />
+                        </Button>
+                        <Button
+                            x:Name="btnHeaderHelp"
+                            Classes="HeaderIcon"
+                            Theme="{DynamicResource HeaderIconButton}"
+                            Width="36"
+                            Height="32"
+                            Margin="0,0,6,0"
+                            Click="BtnHeaderHelp_Click"
+                            ToolTip.Tip="{x:Static resx:ResUI.menuHelp}">
+                            <!--  纸飞机：实心机身 + 折痕（OpacityMask 压暗下翼，不引入第二种颜色，深浅主题自适应）  -->
+                            <Path
+                                Width="18"
+                                Height="18"
+                                Data="M2,21 L23,12 L2,3 L2,10 L17,12 L2,14 Z"
+                                Fill="{DynamicResource AppTextPrimary}"
+                                Stretch="Uniform"
+                                Stroke="{DynamicResource AppTextPrimary}"
+                                StrokeJoin="Round"
+                                StrokeThickness="0.8">
+                                <Path.OpacityMask>
+                                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                                        <GradientStop Color="#FFFFFFFF" Offset="0" />
+                                        <GradientStop Color="#FFFFFFFF" Offset="0.5" />
+                                        <GradientStop Color="#C4FFFFFF" Offset="0.5" />
+                                        <GradientStop Color="#C4FFFFFF" Offset="1" />
+                                    </LinearGradientBrush>
+                                </Path.OpacityMask>
+                            </Path>
+                        </Button>
+                        <Button
+                            x:Name="btnToggleSide"
+                            Classes="HeaderIcon"
+                            Theme="{DynamicResource HeaderIconButton}"
+                            Width="38"
+                            Height="34"
+                            Margin="0,0,2,0"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Click="BtnToggleSide_Click"
+                            ToolTip.Tip="显示 / 隐藏右侧面板">
+                            <PathIcon
+                                Width="17"
+                                Height="17"
+                                Data="F0 M2,3 H22 V19 H2 Z M3.4,4.4 H13 V17.6 H3.4 Z M14.6,4.4 H20.6 V17.6 H14.6 Z"
+                                Foreground="{DynamicResource AppTextPrimary}" />
+                        </Button>
+                        <ContentControl
+                            x:Name="conTheme"
+                            Margin="0,0,4,0"
+                            VerticalAlignment="Center" />
+                    </StackPanel>
 
-                    <MenuItem x:Name="menuClose" Header="{x:Static resx:ResUI.menuExit}" />
-                </Menu>
+                                        <!--  自绘窗口按钮：40x32 命中区，图标统一 10px 画布、描边 1.55，垂直居中  -->
+                    <StackPanel
+                        Grid.Column="4"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+                        <Button
+                            x:Name="btnWinMin"
+                            Classes="HeaderIcon"
+                            Theme="{DynamicResource HeaderIconButton}"
+                            Width="40"
+                            Height="32"
+                            Margin="0,0,2,0"
+                            Click="BtnWinMin_Click"
+                            ToolTip.Tip="最小化">
+                            <Path
+                                Data="M0,-0.1 H10"
+                                HorizontalAlignment="Center"
+                                StrokeThickness="1.55"
+                                Stretch="None"
+                                VerticalAlignment="Center" />
+                        </Button>
+                        <Button
+                            x:Name="btnWinMax"
+                            Classes="HeaderIcon"
+                            Theme="{DynamicResource HeaderIconButton}"
+                            Width="40"
+                            Height="32"
+                            Margin="0,0,2,0"
+                            Click="BtnWinMax_Click"
+                            ToolTip.Tip="最大化">
+                            <Path
+                                Data="M0,0 H10 V10 H0 Z"
+                                HorizontalAlignment="Center"
+                                StrokeThickness="1.55"
+                                Stretch="None"
+                                VerticalAlignment="Center" />
+                        </Button>
+                        <Button
+                            x:Name="btnWinClose"
+                            Classes="HeaderIcon"
+                            Theme="{DynamicResource HeaderCloseButton}"
+                            Width="40"
+                            Height="32"
+                            Click="BtnWinClose_Click"
+                            ToolTip.Tip="关闭">
+                            <Path
+                                Data="M0,0 L10,10 M10,0 L0,10"
+                                HorizontalAlignment="Center"
+                                StrokeThickness="1.55"
+                                Stretch="None"
+                                VerticalAlignment="Center" />
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
 
-                <Button
-                    x:Name="btnNewUpdate"
-                    Margin="{StaticResource MarginLr8}"
-                    HorizontalAlignment="Left"
-                    Content="{x:Static resx:ResUI.menuNewUpdate}"
-                    IsVisible="False" />
-            </DockPanel>
+            <!--  左侧导轨：配置项 / 设置 等入口  -->
+            <Border
+                Width="232"
+                Background="{DynamicResource AppSidebarBg}"
+                DockPanel.Dock="Left">
+                <DockPanel Margin="6,0,6,10">
+                    <!--  一级入口：配置项（纯文字，点击弹出原「添加服务器」菜单）  -->
+                    <Button
+                        x:Name="btnRailConfig"
+                        Margin="4,2,4,0"
+                        DockPanel.Dock="Top"
+                        Click="BtnRailConfig_Click"
+                        Content="{x:Static resx:ResUI.menuServers}"
+                        Theme="{DynamicResource RailItemButton}" />
 
-            <ContentControl x:Name="contentStatusBarView" DockPanel.Dock="Bottom" />
 
+                    <!--  一级：配置项（上面）与订阅分组（下面）之间的分隔线  -->
+                    <Border
+                        Margin="12,6,12,0"
+                        BorderBrush="{DynamicResource AppCardBorder}"
+                        BorderThickness="0,1,0,0"
+                        DockPanel.Dock="Top" />
+
+                    <!--  二级区标题：订阅分组（灰色小字）+ 右侧 新增 / 菜单  -->
+                    <Grid
+                        Margin="14,6,6,2"
+                        ColumnDefinitions="*,Auto,Auto"
+                        DockPanel.Dock="Top">
+                        <TextBlock
+                            FontSize="11"
+                            Foreground="{DynamicResource AppTextSecondary}"
+                            LetterSpacing="1"
+                            Text="{x:Static resx:ResUI.menuSubscription}"
+                            VerticalAlignment="Center" />
+                        <Button
+                            x:Name="btnRailSubAddTop"
+                            Grid.Column="1"
+                            Width="20"
+                            Height="20"
+                            Margin="0,0,2,0"
+                            Classes="HeaderIcon"
+                            Command="{Binding ProfilesViewModel.AddSubCmd}"
+                            Theme="{DynamicResource HeaderIconButton}"
+                            ToolTip.Tip="{x:Static resx:ResUI.menuSubAdd}">
+                            <Path
+                                Width="12"
+                                Height="12"
+                                Data="M6,2 V10 M2,6 H10"
+                                Stretch="None"
+                                Stroke="{DynamicResource AppTextSecondary}"
+                                StrokeLineCap="Round"
+                                StrokeThickness="1.4" />
+                        </Button>
+                        <Button
+                            x:Name="btnRailSubMenu"
+                            Grid.Column="2"
+                            Width="20"
+                            Height="20"
+                            Classes="HeaderIcon"
+                            Click="BtnRailSubMenu_Click"
+                            Theme="{DynamicResource HeaderIconButton}"
+                            ToolTip.Tip="{x:Static resx:ResUI.menuSubscription}">
+                            <Path
+                                Width="16"
+                                Height="16"
+                                Data="M2.9,8 A1.1,1.1 0 1 1 5.1,8 A1.1,1.1 0 1 1 2.9,8 Z M6.9,8 A1.1,1.1 0 1 1 9.1,8 A1.1,1.1 0 1 1 6.9,8 Z M10.9,8 A1.1,1.1 0 1 1 13.1,8 A1.1,1.1 0 1 1 10.9,8 Z"
+                                Fill="{DynamicResource AppTextSecondary}"
+                                Stretch="None" />
+                        </Button>
+                    </Grid>
+                    <!--  底部工具栏已移除：编辑订阅移到列表上方工具栏（测速图标之后），加号统一用标题栏的 ＋  -->
+
+                    <ListBox
+                        x:Name="lstGroupRail"
+                        Background="Transparent"
+                        Padding="0,0,0,4"
+                        Margin="0,0,0,0"
+                        BorderThickness="0"
+                        ItemsSource="{Binding ProfilesViewModel.SubItems}"
+                        SelectedItem="{Binding ProfilesViewModel.SelectedSub, Mode=TwoWay}"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <ListBox.Styles>
+                            <Style Selector="ListBoxItem">
+                                <Setter Property="Padding" Value="10,4" />
+                                <Setter Property="FontSize" Value="13" />
+                                <Setter Property="Margin" Value="0,1" />
+                                <Setter Property="CornerRadius" Value="9" />
+                                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                                <Setter Property="Foreground" Value="{DynamicResource AppTextPrimary}" />
+                            </Style>
+                            <Style Selector="ListBoxItem:pointerover">
+                                <Setter Property="Background" Value="{DynamicResource AppNavHover}" />
+                            </Style>
+                            <Style Selector="ListBoxItem:selected">
+                                <Setter Property="Background" Value="{DynamicResource AppNavSelected}" />
+                                <Setter Property="FontWeight" Value="SemiBold" />
+                            </Style>
+                        </ListBox.Styles>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Remarks}" TextTrimming="CharacterEllipsis" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DockPanel>
+            </Border>
+            <!--  底部状态栏外壳  -->
+            <Border
+                Background="{DynamicResource AppCardBg}"
+                BorderBrush="{DynamicResource AppCardBorder}"
+                BorderThickness="0,1,0,0"
+                DockPanel.Dock="Bottom">
+                    <DockPanel>
+                                    <!--  右下角：退出（电源符号） / 重启服务（刷新箭头） / 折叠信息面板  -->
+                    <Button
+                        x:Name="btnStatusExit"
+                        Classes="HeaderIcon"
+                        Theme="{DynamicResource HeaderIconButton}"
+                        Width="34"
+                        Height="30"
+                        Margin="0,0,4,0"
+                        VerticalAlignment="Center"
+                        Click="MenuClose_Click"
+                        DockPanel.Dock="Right"
+                        ToolTip.Tip="{x:Static resx:ResUI.menuExit}">
+                        <Path
+                            Width="17"
+                            Height="17"
+                            Data="M12,2.94 A7,7 0 1 1 5,2.94 M8.5,1 V8.6"
+                            Stretch="None"
+                            Stroke="{DynamicResource AppTextPrimary}"
+                            StrokeLineCap="Round"
+                            StrokeJoin="Round"
+                            StrokeThickness="2" />
+                    </Button>
+                    <Button
+                        x:Name="btnStatusReload"
+                        Classes="HeaderIcon"
+                        Theme="{DynamicResource HeaderIconButton}"
+                        Width="34"
+                        Height="30"
+                        Margin="0,0,2,0"
+                        VerticalAlignment="Center"
+                        Command="{Binding ReloadCmd}"
+                        DockPanel.Dock="Right"
+                        IsEnabled="{Binding BlReloadEnabled}"
+                        ToolTip.Tip="{x:Static resx:ResUI.menuReload}">
+                        <PathIcon
+                            Width="17"
+                            Height="17"
+                            Data="{StaticResource SemiIconRefresh}"
+                            Foreground="{DynamicResource AppTextPrimary}" />
+                    </Button>
+                    <Button
+                        x:Name="btnToggleLog"
+                        Classes="HeaderIcon"
+                        Theme="{DynamicResource HeaderIconButton}"
+                        Width="30"
+                        Height="28"
+                        VerticalAlignment="Center"
+                        Click="BtnToggleLog_Click"
+                        DockPanel.Dock="Right"
+                        ToolTip.Tip="折叠 / 展开信息面板">
+                        <Path
+                            x:Name="txtToggleGlyph"
+                            Width="10"
+                            Height="6"
+                            Data="M0.8,0.8 L5,5 L9.2,0.8"
+                            RenderTransformOrigin="50%,50%"
+                            Stretch="None"
+                            Stroke="{DynamicResource AppTextSecondary}"
+                            StrokeLineCap="Round"
+                            StrokeJoin="Round"
+                            StrokeThickness="1.5" />
+                    </Button>
+<ContentControl x:Name="contentStatusBarView" />
+                </DockPanel>
+            </Border>
+
+            <!--  主体（保持原有 3 列 / 3 行可切换结构）  -->
             <Grid
                 x:Name="gridMain"
-                ColumnDefinitions="1*,10,1*"
+                Margin="0"
+                ColumnDefinitions="2.2*,10,1*"
                 IsVisible="False">
                 <ContentControl x:Name="tabProfiles" Grid.Column="0" />
                 <GridSplitter
                     x:Name="gridSplitter"
                     Grid.Column="1"
                     HorizontalAlignment="Stretch" />
-                <DockPanel x:Name="tabDockPanel" Grid.Column="2">
+                <Border
+                    x:Name="tabDockPanelHost"
+                    Grid.Column="2"
+                    Margin="0,10,10,10"
+                    Background="{DynamicResource AppCardBg}"
+                    ClipToBounds="True"
+                    CornerRadius="14">
+                    <DockPanel x:Name="tabDockPanel" Background="Transparent">
                     <TabStrip
                         x:Name="tabStripH"
                         Margin="{StaticResource MarginLr8}"
@@ -146,8 +411,167 @@
                         </TabStrip.ItemsPanel>
                     </TabStrip>
                     <ContentControl x:Name="tabContent" />
-                </DockPanel>
+                    </DockPanel>
+                </Border>
             </Grid>
         </DockPanel>
-    </dialogHost:DialogHost>
+        </dialogHost:DialogHost>
+        <!--  无边框窗口的缩放热区  -->
+        <Border
+            Height="4"
+            VerticalAlignment="Top"
+            Background="Transparent"
+            Cursor="SizeNorthSouth"
+            PointerPressed="ResizeTop_PointerPressed" />
+        <Border
+            Height="4"
+            VerticalAlignment="Bottom"
+            Background="Transparent"
+            Cursor="SizeNorthSouth"
+            PointerPressed="ResizeBottom_PointerPressed" />
+        <Border
+            Width="4"
+            HorizontalAlignment="Left"
+            Background="Transparent"
+            Cursor="SizeWestEast"
+            PointerPressed="ResizeLeft_PointerPressed" />
+        <Border
+            Width="4"
+            HorizontalAlignment="Right"
+            Background="Transparent"
+            Cursor="SizeWestEast"
+            PointerPressed="ResizeRight_PointerPressed" />
+        <Border
+            Width="10"
+            Height="10"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Background="Transparent"
+            Cursor="TopLeftCorner"
+            PointerPressed="ResizeTopLeft_PointerPressed" />
+        <Border
+            Width="10"
+            Height="10"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Background="Transparent"
+            Cursor="TopRightCorner"
+            PointerPressed="ResizeTopRight_PointerPressed" />
+        <Border
+            Width="10"
+            Height="10"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Bottom"
+            Background="Transparent"
+            Cursor="BottomLeftCorner"
+            PointerPressed="ResizeBottomLeft_PointerPressed" />
+        <Border
+            Width="10"
+            Height="10"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Background="Transparent"
+            Cursor="BottomRightCorner"
+            PointerPressed="ResizeBottomRight_PointerPressed" />
+        <!--  设置 / 帮助菜单已移到顶栏图标按钮，这里只保留菜单本体供 MenuFlyout 使用  -->
+        <Menu x:Name="hiddenMenus" IsVisible="False">
+            <!--  左栏一级入口的菜单本体（由 MenuFlyout 弹出）  -->
+                        <MenuItem x:Name="menuServers">
+                            <MenuItem.Header>
+                                <TextBlock
+                                    Foreground="{DynamicResource AppTextPrimary}"
+                                    Text="{x:Static resx:ResUI.menuServers}"
+                                    VerticalAlignment="Center" />
+                            </MenuItem.Header>
+                            <MenuItem
+                                x:Name="menuAddServerViaClipboard"
+                                Header="{x:Static resx:ResUI.menuAddServerViaClipboard}"
+                                InputGesture="Ctrl+V" />
+                            <MenuItem
+                                x:Name="menuAddServerViaScan"
+                                Header="{x:Static resx:ResUI.menuAddServerViaScan}"
+                                InputGesture="Ctrl+S" />
+                            <MenuItem x:Name="menuAddServerViaImage" Header="{x:Static resx:ResUI.menuAddServerViaImage}" />
+                            <Separator />
+                            <MenuItem x:Name="menuAddCustomServer" Header="{x:Static resx:ResUI.menuAddCustomServer}" />
+                            <MenuItem x:Name="menuAddPolicyGroupServer" Header="{x:Static resx:ResUI.menuAddPolicyGroupServer}" />
+                            <MenuItem x:Name="menuAddProxyChainServer" Header="{x:Static resx:ResUI.menuAddProxyChainServer}" />
+                            <MenuItem x:Name="menuAddCustomOutboundServer" Header="{x:Static resx:ResUI.menuAddCustomOutboundServer}" />
+                            <Separator />
+                            <MenuItem x:Name="menuAddVmessServer" Header="{x:Static resx:ResUI.menuAddVmessServer}" />
+                            <MenuItem x:Name="menuAddVlessServer" Header="{x:Static resx:ResUI.menuAddVlessServer}" />
+                            <MenuItem x:Name="menuAddShadowsocksServer" Header="{x:Static resx:ResUI.menuAddShadowsocksServer}" />
+                            <MenuItem x:Name="menuAddTrojanServer" Header="{x:Static resx:ResUI.menuAddTrojanServer}" />
+                            <MenuItem x:Name="menuAddHysteria2Server" Header="{x:Static resx:ResUI.menuAddHysteria2Server}" />
+                            <MenuItem x:Name="menuAddWireguardServer" Header="{x:Static resx:ResUI.menuAddWireguardServer}" />
+                            <MenuItem x:Name="menuAddMasqueServer" Header="{x:Static resx:ResUI.menuAddMasqueServer}" />
+                            <MenuItem x:Name="menuAddSocksServer" Header="{x:Static resx:ResUI.menuAddSocksServer}" />
+                            <MenuItem x:Name="menuAddHttpServer" Header="{x:Static resx:ResUI.menuAddHttpServer}" />
+                            <Separator />
+                            <MenuItem x:Name="menuAddTuicServer" Header="{x:Static resx:ResUI.menuAddTuicServer}" />
+                            <MenuItem x:Name="menuAddAnytlsServer" Header="{x:Static resx:ResUI.menuAddAnytlsServer}" />
+                            <MenuItem x:Name="menuAddNaiveServer" Header="{x:Static resx:ResUI.menuAddNaiveServer}" />
+                        </MenuItem>
+
+                        <MenuItem x:Name="menuSubscription" IsVisible="False">
+                            <MenuItem.Header>
+                                <StackPanel
+                                    Orientation="Horizontal"
+                                    Spacing="10">
+                                    <!--  实心文件夹  -->
+                                    <Path
+                                        Width="19"
+                                        Height="19"
+                                        Data="M2.6,6.0 A1.9,1.9 0 0 1 4.5,4.1 H8.2 L10.2,6.2 H15.4 A1.9,1.9 0 0 1 17.3,8.1 V14.4 A1.9,1.9 0 0 1 15.4,16.3 H4.5 A1.9,1.9 0 0 1 2.6,14.4 Z"
+                                        Fill="{DynamicResource AppTextPrimary}"
+                                        Stretch="None"
+                                        VerticalAlignment="Center" />
+                                    <TextBlock
+                                        Foreground="{DynamicResource AppTextPrimary}"
+                                        Text="{x:Static resx:ResUI.menuSubscription}"
+                                        VerticalAlignment="Center" />
+                                </StackPanel>
+                            </MenuItem.Header>
+                            <MenuItem x:Name="menuSubSetting" Header="{x:Static resx:ResUI.menuSubSetting}" />
+                            <Separator />
+                            <MenuItem x:Name="menuSubUpdate" Header="{x:Static resx:ResUI.menuSubUpdate}" />
+                            <MenuItem x:Name="menuSubUpdateViaProxy" Header="{x:Static resx:ResUI.menuSubUpdateViaProxy}" />
+
+                        </MenuItem>
+            <MenuItem x:Name="menuSetting" Header="{x:Static resx:ResUI.menuSetting}">
+                <MenuItem x:Name="menuOptionSetting" Header="{x:Static resx:ResUI.menuOptionSetting}" />
+                <MenuItem x:Name="menuRoutingSetting" Header="{x:Static resx:ResUI.menuRoutingSetting}" />
+                <MenuItem x:Name="menuDNSSetting" Header="{x:Static resx:ResUI.menuDNSSetting}" />
+                <MenuItem x:Name="menuFullConfigTemplate" Header="{x:Static resx:ResUI.menuFullConfigTemplate}" />
+                <MenuItem
+                    x:Name="menuGlobalHotkeySetting"
+                    Header="{x:Static resx:ResUI.menuGlobalHotkeySetting}"
+                    IsVisible="{Binding BlIsWindows}" />
+                <Separator />
+                <MenuItem
+                    x:Name="menuRebootAsAdmin"
+                    Header="{x:Static resx:ResUI.menuRebootAsAdmin}"
+                    IsVisible="{Binding BlIsWindows}" />
+                <MenuItem
+                    x:Name="menuSettingsSetUWP"
+                    Header="{x:Static resx:ResUI.TbSettingsSetUWP}"
+                    IsVisible="{Binding BlIsWindows}" />
+                <MenuItem x:Name="menuClearServerStatistics" Header="{x:Static resx:ResUI.menuClearServerStatistics}" />
+                <Separator />
+                <MenuItem Header="{x:Static resx:ResUI.menuRegionalPresets}">
+                    <MenuItem x:Name="menuRegionalPresetsDefault" Header="{x:Static resx:ResUI.menuRegionalPresetsDefault}" />
+                    <MenuItem x:Name="menuRegionalPresetsRussia" Header="{x:Static resx:ResUI.menuRegionalPresetsRussia}" />
+                    <MenuItem x:Name="menuRegionalPresetsIran" Header="{x:Static resx:ResUI.menuRegionalPresetsIran}" />
+                </MenuItem>
+                <MenuItem x:Name="menuBackupAndRestore" Header="{x:Static resx:ResUI.menuBackupAndRestore}" />
+                <MenuItem x:Name="menuOpenTheFileLocation" Header="{x:Static resx:ResUI.menuOpenTheFileLocation}" />
+            </MenuItem>
+            <MenuItem x:Name="menuHelp" Header="{x:Static resx:ResUI.menuHelp}">
+                <MenuItem x:Name="menuCheckUpdate" Header="{x:Static resx:ResUI.menuCheckUpdate}" />
+                <Separator />
+            </MenuItem>
+            <MenuItem x:Name="menuReload" Header="{x:Static resx:ResUI.menuReload}" />
+            <MenuItem x:Name="menuClose" Header="{x:Static resx:ResUI.menuExit}" />
+        </Menu>
+    </Grid>
 </Window>

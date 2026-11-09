@@ -402,3 +402,6 @@ FodyWeavers.xsd
 # JetBrains Rider
 .idea/
 *.sln.iml
+
+# ---- 定制补丁集：本地子模块目录不纳入版本管理 ----
+v2rayN/GlobalHotKeys/

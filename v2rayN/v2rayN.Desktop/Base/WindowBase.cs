@@ -46,8 +46,27 @@ public class WindowBase<TViewModel> : ReactiveWindow<TViewModel> where TViewMode
             var x = workingArea.X + ((workingArea.Width - totalWidth) / 2);
             var y = workingArea.Y + ((workingArea.Height - totalHeight) / 2);
             Position = new PixelPoint((int)x, (int)y);
+
+            // 有保存过位置且那块屏幕还在（窗口仍可见）就恢复，否则维持居中
+            if (sizeItem.X != 0 || sizeItem.Y != 0)
+            {
+                var saved = new PixelPoint(sizeItem.X, sizeItem.Y);
+                var targetScreen = Screens.ScreenFromPoint(saved) ?? screen;
+                var wa = targetScreen.WorkingArea;
+                var visible = saved.X >= wa.X - 40 && saved.Y >= wa.Y - 40
+                              && saved.X <= wa.Right - 120 && saved.Y <= wa.Bottom - 80;
+                if (visible)
+                {
+                    Position = new PixelPoint(
+                        Math.Clamp(saved.X, wa.X - 40, wa.Right - 120),
+                        Math.Clamp(saved.Y, wa.Y - 40, wa.Bottom - 80));
+                }
+            }
         }
-        catch { }
+        catch (Exception ex)
+        {
+            Logging.SaveLog("WindowBase.OnLoaded", ex);
+        }
     }
 
     protected override void OnClosed(EventArgs e)
@@ -55,8 +74,15 @@ public class WindowBase<TViewModel> : ReactiveWindow<TViewModel> where TViewMode
         base.OnClosed(e);
         try
         {
-            ConfigHandler.SaveWindowSizeItem(AppManager.Instance.Config, GetType().Name, Width, Height);
+            // 最大化/最小化时宽高不是用户意图，不覆盖已保存的尺寸与位置
+            if (WindowState == WindowState.Normal)
+            {
+                ConfigHandler.SaveWindowSizeItem(AppManager.Instance.Config, GetType().Name, Width, Height, Position.X, Position.Y);
+            }
         }
-        catch { }
+        catch (Exception ex)
+        {
+            Logging.SaveLog("WindowBase.OnClosed", ex);
+        }
     }
 }

@@ -2,7 +2,8 @@ namespace ServiceLib.Handler;
 
 public static class SubscriptionHandler
 {
-    public static async Task UpdateProcess(Config config, string subId, bool blProxy, Func<bool, string, Task> updateFunc)
+    /// <summary>返回是否至少有一个订阅更新成功（供「先直连、失败再走代理」判断）</summary>
+    public static async Task<bool> UpdateProcess(Config config, string subId, bool blProxy, Func<bool, string, Task> updateFunc)
     {
         await updateFunc?.Invoke(false, ResUI.MsgUpdateSubscriptionStart);
         var subItem = await AppManager.Instance.SubItems();
@@ -10,7 +11,7 @@ public static class SubscriptionHandler
         if (subItem is not { Count: > 0 })
         {
             await updateFunc?.Invoke(false, ResUI.MsgNoValidSubscription);
-            return;
+            return false;
         }
 
         var successCount = 0;
@@ -55,6 +56,7 @@ public static class SubscriptionHandler
         }
 
         await updateFunc?.Invoke(successCount > 0, $"{ResUI.MsgUpdateSubscriptionEnd}");
+        return successCount > 0;
     }
 
     private static bool IsValidSubscription(SubItem item, string subId)

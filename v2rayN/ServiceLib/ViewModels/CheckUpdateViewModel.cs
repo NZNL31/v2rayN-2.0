@@ -1,4 +1,4 @@
-namespace ServiceLib.ViewModels;
+﻿namespace ServiceLib.ViewModels;
 
 public partial class CheckUpdateViewModel : MyReactiveObject
 {
@@ -326,6 +326,13 @@ public partial class CheckUpdateViewModel : MyReactiveObject
     {
         try
         {
+            if (Global.DisableSelfUpdate)
+            {
+                // 定制版：绝不运行升级器（它会用新版覆盖 v2rayN.exe）
+                Logging.SaveLog("UpgradeN skipped: self update disabled in custom build");
+                return;
+            }
+
             var fileName = _lstUpdated.FirstOrDefault(x => x.CoreType == _v2rayN)?.FileName;
             if (fileName.IsNullOrEmpty())
             {

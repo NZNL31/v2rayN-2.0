@@ -1,8 +1,14 @@
-namespace ServiceLib;
+﻿namespace ServiceLib;
 
 public class Global
 {
     public const string AppName = "v2rayN";
+
+    /// <summary>
+    /// 定制版开关：禁止 v2rayN 本体自动更新（会下载新版 exe 覆盖掉定制内容）。
+    /// 内核（Xray / mihomo / sing-box）与 GeoFiles 的更新不受影响。
+    /// </summary>
+    public const bool DisableSelfUpdate = true;
     public const string GithubUrl = "https://github.com";
     public const string GithubApiUrl = "https://api.github.com/repos";
     public const string GeoUrl = "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/{0}.dat";

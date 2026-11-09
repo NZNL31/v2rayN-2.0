@@ -15,7 +15,12 @@
     Design.DataContext="{x:Static dd:DesignData.AddServer}"
     ShowInTaskbar="False"
     WindowStartupLocation="CenterScreen"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    xmlns:chrome="clr-namespace:v2rayN.Desktop.Views.Chrome"
+    WindowDecorations="None">
+<DockPanel>
+<chrome:WindowTitleBar DockPanel.Dock="Top" />
+
     <DockPanel Margin="{StaticResource Margin8}">
         <StackPanel
             Margin="{StaticResource Margin4}"
@@ -1524,4 +1529,5 @@
             </Grid>
         </ScrollViewer>
     </DockPanel>
+</DockPanel>
 </Window>

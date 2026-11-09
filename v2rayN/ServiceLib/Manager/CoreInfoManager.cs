@@ -1,4 +1,4 @@
-namespace ServiceLib.Manager;
+﻿namespace ServiceLib.Manager;
 
 public sealed class CoreInfoManager
 {
@@ -56,7 +56,8 @@ public sealed class CoreInfoManager
 
         if (RuntimeInformation.ProcessArchitecture != Architecture.X86)
         {
-            if (IsCheckUpdateSupported(ECoreType.v2rayN))
+            // 定制版不自更新，避免覆盖定制 exe
+            if (!Global.DisableSelfUpdate && IsCheckUpdateSupported(ECoreType.v2rayN))
             {
                 lst.Add(ECoreType.v2rayN);
             }
@@ -76,7 +77,7 @@ public sealed class CoreInfoManager
     {
         return type switch
         {
-            ECoreType.v2rayN => !Utils.IsPackagedInstall(),
+            ECoreType.v2rayN => !Global.DisableSelfUpdate && !Utils.IsPackagedInstall(),
             ECoreType.Xray => true,
             ECoreType.mihomo => true,
             ECoreType.sing_box => true,

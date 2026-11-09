@@ -2247,6 +2247,18 @@ public static class ConfigHandler
     #region Sub & Group
 
     /// <summary>
+    /// Find a subscription item by its URL
+    /// </summary>
+    public static async Task<SubItem?> GetSubItemByUrl(string url)
+    {
+        if (url.IsNullOrEmpty())
+        {
+            return null;
+        }
+        return await SQLiteHelper.Instance.TableAsync<SubItem>().FirstOrDefaultAsync(t => t.Url == url);
+    }
+
+    /// <summary>
     /// Add a subscription item from URL
     /// Creates a new subscription with default settings
     /// </summary>
@@ -3080,7 +3092,7 @@ public static class ConfigHandler
         return sizeItem;
     }
 
-    public static int SaveWindowSizeItem(Config config, string typeName, double width, double height)
+    public static int SaveWindowSizeItem(Config config, string typeName, double width, double height, int x = int.MinValue, int y = int.MinValue)
     {
         var sizeItem = config?.UiItem?.WindowSizeItem?.FirstOrDefault(t => t.TypeName == typeName);
         if (sizeItem == null)
@@ -3091,6 +3103,16 @@ public static class ConfigHandler
 
         sizeItem.Width = (int)width;
         sizeItem.Height = (int)height;
+
+        // 只有调用方明确给了坐标才覆盖，避免其它窗口/旧调用把位置清掉
+        if (x != int.MinValue)
+        {
+            sizeItem.X = x;
+        }
+        if (y != int.MinValue)
+        {
+            sizeItem.Y = y;
+        }
 
         return 0;
     }

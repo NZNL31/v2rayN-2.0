@@ -1,7 +1,8 @@
-<UserControl
+﻿<UserControl
     x:Class="v2rayN.Desktop.Views.ProfilesView"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:v2rayN.Desktop.Controls"
     xmlns:conv="using:v2rayN.Desktop.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dd="clr-namespace:v2rayN.Desktop.DesignData"
@@ -16,6 +17,33 @@
     mc:Ignorable="d">
     <UserControl.Resources>
         <conv:DelayColorConverter x:Key="DelayColorConverter" />
+    <conv:PositiveToBoolConverter x:Key="PositiveToBool" />
+
+        <!--  左侧导航项：圆角胶囊 + 选中浅蓝底  -->
+        <ControlTheme x:Key="NavItemTheme" TargetType="ListBoxItem">
+            <Setter Property="Padding" Value="10,7" />
+            <Setter Property="Margin" Value="0,1" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource AppTextPrimary}" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Border
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="8"
+                            Padding="{TemplateBinding Padding}">
+                            <ContentPresenter
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </ControlTheme>
 
         <ControlTheme x:Key="{x:Type DataGridColumnChooser}" TargetType="DataGridColumnChooser">
             <Setter Property="ItemTemplate">
@@ -59,57 +87,47 @@
             </Setter>
         </ControlTheme>
     </UserControl.Resources>
+
+    <UserControl.Styles>
+        <!--  当前节点：别名加粗  -->
+        <Style Selector="TextBlock.active">
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+    </UserControl.Styles>
     <Grid>
-        <DockPanel>
-            <WrapPanel Margin="2" DockPanel.Dock="Top">
-                <ListBox
-                    x:Name="lstGroup"
-                    Margin="{StaticResource MarginLr4}"
-                    DisplayMemberBinding="{Binding Remarks}"
-                    ItemsSource="{Binding SubItems}"
-                    Theme="{DynamicResource PureCardRadioGroupListBox}">
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel />
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-
-                    <ListBox.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem x:Name="menuSubEdit" Header="{x:Static resx:ResUI.menuSubEdit}" />
-                            <MenuItem x:Name="menuSubAdd" Header="{x:Static resx:ResUI.menuSubAdd}" />
-                            <MenuItem x:Name="menuSubDelete" Header="{x:Static resx:ResUI.menuSubDelete}" />
-                        </ContextMenu>
-                    </ListBox.ContextMenu>
-                </ListBox>
-
-                <StackPanel Orientation="Horizontal">
-                    <Button
-                        x:Name="btnEditSub"
-                        Margin="{StaticResource MarginLr4}"
-                        Classes="IconButton Success"
-                        ToolTip.Tip="{x:Static resx:ResUI.menuSubEdit}">
-                        <Button.Content>
-                            <PathIcon Data="{StaticResource SemiIconEdit}" />
-                        </Button.Content>
-                    </Button>
-                    <Button
-                        x:Name="btnAddSub"
-                        Margin="{StaticResource MarginLr4}"
-                        Classes="IconButton Success"
-                        ToolTip.Tip="{x:Static resx:ResUI.menuSubAdd}">
-                        <Button.Content>
-                            <PathIcon Data="{StaticResource SemiIconPlus}" />
-                        </Button.Content>
-                    </Button>
-
-                    <TextBox
-                        x:Name="txtServerFilter"
-                        Width="200"
-                        Margin="{StaticResource MarginLr4}"
-                        VerticalContentAlignment="Center"
-                        PlaceholderText="{x:Static resx:ResUI.MsgServerTitle}"
-                        ToolTip.Tip="{x:Static resx:ResUI.MsgServerTitle}" />
+            <!--  右侧内容区  -->
+            <DockPanel Margin="0,10,18,14">
+                <WrapPanel Margin="0,0,0,10" DockPanel.Dock="Top">
+                    <Grid Margin="0,0,6,0" VerticalAlignment="Center">
+                        <TextBox
+                            x:Name="txtServerFilter"
+                            Width="200"
+                            Padding="8,0,26,0"
+                            VerticalContentAlignment="Center"
+                            CornerRadius="7"
+                            PlaceholderText="搜索别名 / 地址"
+                            ToolTip.Tip="输入即过滤（Ctrl+F 聚焦）" />
+                        <Button
+                            x:Name="btnClearFilter"
+                            Width="18"
+                            Height="18"
+                            Margin="0,0,6,0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Click="BtnClearFilter_Click"
+                            IsVisible="False"
+                            Theme="{DynamicResource HeaderIconButton}"
+                            ToolTip.Tip="清除过滤">
+                            <Path
+                                Width="8"
+                                Height="8"
+                                Data="M0,0 L8,8 M8,0 L0,8"
+                                Stretch="None"
+                                Stroke="{DynamicResource AppTextSecondary}"
+                                StrokeLineCap="Round"
+                                StrokeThickness="1.3" />
+                        </Button>
+                    </Grid>
 
                     <Button
                         x:Name="btnAutofitColumnWidth"
@@ -148,22 +166,56 @@
                             <PathIcon Data="{StaticResource building_ping}" />
                         </Button.Content>
                     </Button>
+                    <Button
+                        x:Name="btnSubEditTop"
+                        Margin="{StaticResource MarginLr4}"
+                        Classes="IconButton Success"
+                        ToolTip.Tip="{x:Static resx:ResUI.menuSubEdit}">
+                        <Button.Content>
+                            <PathIcon Data="{StaticResource SemiIconEdit}" />
+                        </Button.Content>
+                    </Button>
+                    <!--  更新当前订阅：一次跑两遍（先直连，再走代理）  -->
+                    <Button
+                        x:Name="btnSubUpdateTop"
+                        Margin="{StaticResource MarginLr4}"
+                        Classes="IconButton Success"
+                        Click="BtnSubUpdateTop_Click"
+                        ToolTip.Tip="更新当前订阅（先直连，失败再走代理）">
+                        <Button.Content>
+                            <Path
+                                Width="17"
+                                Height="17"
+                                Data="M8.5,2.6 V10.4 M5.2,7.2 L8.5,10.5 L11.8,7.2 M3,13.4 H14"
+                                Stretch="None"
+                                Stroke="{DynamicResource AppTextPrimary}"
+                                StrokeLineCap="Round"
+                                StrokeJoin="Round"
+                                StrokeThickness="1.5" />
+                        </Button.Content>
+                    </Button>
+                </WrapPanel>
 
-                </StackPanel>
-
-            </WrapPanel>
-
+                <Border
+                    Background="{DynamicResource AppCardBg}"
+                    BorderBrush="{DynamicResource AppCardBorder}"
+                    BorderThickness="1"
+                    BoxShadow="0 1 3 0 #14000000"
+                    ClipToBounds="True"
+                    CornerRadius="16">
+            <Grid>
             <DataGrid
                 x:Name="lstProfiles"
                 AutoGenerateColumns="False"
-                BorderThickness="1"
+                BorderThickness="0"
                 CanUserAddRows="False"
                 CanUserDeleteRows="False"
                 CanUserHideColumns="True"
                 CanUserReorderColumns="True"
                 CanUserResizeColumns="True"
                 Classes.InsetContent="True"
-                GridLinesVisibility="All"
+                HorizontalScrollBarVisibility="Disabled"
+                GridLinesVisibility="None"
                 HeadersVisibility="All"
                 IsReadOnly="False"
                 ItemsSource="{Binding ProfileItems}"
@@ -265,59 +317,101 @@
                 </DataGrid.ContextMenu>
 
                 <DataGrid.Columns>
-                    <DataGridTextColumn
-                        Width="80"
-                        Binding="{Binding ConfigType}"
-                        Header="{x:Static resx:ResUI.LvServiceType}"
-                        IsReadOnly="True"
-                        Tag="ConfigType" />
-
+                    <!--  类型：居中显示；当前节点左侧带一条 2px 竖条强调  -->
                     <DataGridTemplateColumn
+                        Width="80"
+                        Header="{x:Static resx:ResUI.LvServiceType}"
+                        SortMemberPath="ConfigType"
+                        Tag="ConfigType">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Border
+                                        Width="2"
+                                        Margin="3,8"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Stretch"
+                                        Background="{DynamicResource AppTextPrimary}"
+                                        CornerRadius="1"
+                                        IsVisible="{Binding IsActive}" />
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        TextAlignment="Center"
+                                        Text="{Binding ConfigType}" />
+                                </Grid>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <!--  别名：按比例伸缩（2*），窗口变宽变窄都跟着走  -->
+                    <DataGridTemplateColumn
+                        Width="2*"
+                        MinWidth="140"
                         Header="{x:Static resx:ResUI.LvRemarks}"
                         SortMemberPath="Remarks"
                         Tag="Remarks">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <StackPanel Margin="{StaticResource MarginLr8}" Orientation="Horizontal">
+                                <!--  用 Grid 约束文本宽度，避免长别名把星号列撑开  -->
+                                <Grid Margin="{StaticResource MarginLr8}" ColumnDefinitions="Auto,*">
                                     <Label
                                         Margin="{StaticResource MarginLr4}"
                                         Classes="Solid Red"
                                         Content="{x:Static resx:ResUI.TipActiveServer}"
                                         IsVisible="{Binding IsActive}"
                                         Theme="{DynamicResource TagLabel}" />
-                                    <TextBlock
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Text="{Binding Remarks}" />
-                                </StackPanel>
+                                    <TextBlock Grid.Column="1" Classes.active="{Binding IsActive}" VerticalAlignment="Center" Text="{Binding Remarks}"
+                                        TextTrimming="CharacterEllipsis" />
+                                </Grid>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
-                    <DataGridTextColumn
-                        Width="120"
-                        Binding="{Binding Address}"
+                    <!--  地址：按比例伸缩（3*），文本超长省略  -->
+                    <DataGridTemplateColumn
+                        Width="3*"
+                        MinWidth="160"
                         Header="{x:Static resx:ResUI.LvAddress}"
-                        IsReadOnly="True"
-                        Tag="Address" />
-                    <DataGridTextColumn
-                        Width="60"
-                        Binding="{Binding Port}"
+                        SortMemberPath="Address"
+                        Tag="Address">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock
+                                    Margin="{StaticResource MarginLr8}"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding Address}"
+                                    TextTrimming="CharacterEllipsis" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <!--  端口：居中，和居中表头对齐  -->
+                    <DataGridTemplateColumn
+                        Width="90"
                         Header="{x:Static resx:ResUI.LvPort}"
-                        IsReadOnly="True"
-                        Tag="Port" />
+                        SortMemberPath="Port"
+                        Tag="Port">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    TextAlignment="Center"
+                                    Text="{Binding Port}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                     <DataGridTextColumn
                         Width="100"
                         Binding="{Binding Network}"
                         Header="{x:Static resx:ResUI.LvTransportProtocol}"
                         IsReadOnly="True"
-                        Tag="Network" />
+                        Tag="Network" IsVisible="False" />
                     <DataGridTextColumn
                         Width="100"
                         Binding="{Binding StreamSecurity}"
                         Header="{x:Static resx:ResUI.LvTLS}"
                         IsReadOnly="True"
-                        Tag="StreamSecurity" />
+                        Tag="StreamSecurity" IsVisible="False" />
                     <DataGridTextColumn
                         Width="100"
                         Binding="{Binding SubRemarks}"
@@ -325,31 +419,76 @@
                         IsReadOnly="True"
                         Tag="SubRemarks" />
                     <DataGridTemplateColumn
+                        Width="110"
                         Header="{x:Static resx:ResUI.LvTestDelay}"
                         SortMemberPath="Delay"
                         Tag="DelayVal">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock
+                                <!--  延迟：4 段信号条（越慢段数越少）+ 数字，单色  -->
+                                <StackPanel
                                     Margin="{StaticResource MarginLr8}"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Center"
-                                    Foreground="{Binding Delay, Converter={StaticResource DelayColorConverter}}"
-                                    Text="{Binding Path=DelayVal, Mode=OneWay}" />
+                                    Orientation="Horizontal"
+                                    Spacing="6">
+                                    <controls:MiniBars
+                                        Width="26"
+                                        Height="12"
+                                        VerticalAlignment="Center"
+                                        Fill="{DynamicResource AppTextPrimary}"
+                                        Invert="True"
+                                        IsVisible="{Binding Delay, Converter={StaticResource PositiveToBool}}"
+                                        Max="400"
+                                        Segments="4"
+                                        Value="{Binding Delay}" />
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        Foreground="{DynamicResource AppTextSecondary}"
+                                        IsVisible="{Binding Delay, Converter={StaticResource PositiveToBool}}"
+                                        Text="{Binding Path=DelayVal, Mode=OneWay}" />
+                                </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTextColumn
-                        Width="100"
-                        Binding="{Binding SpeedVal}"
+                    <!--  速度：进度条（按 100 Mbps 归一化）+ 数字，单色  -->
+                    <DataGridTemplateColumn
+                        Width="150"
                         Header="{x:Static resx:ResUI.LvTestSpeed}"
-                        IsReadOnly="True"
-                        Tag="SpeedVal" />
+                        SortMemberPath="Speed"
+                        Tag="SpeedVal">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel
+                                    Margin="{StaticResource MarginLr8}"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal"
+                                    Spacing="6">
+                                    <TextBlock
+                                        MinWidth="46"
+                                        VerticalAlignment="Center"
+                                        TextAlignment="Right"
+                                        Text="{Binding Path=SpeedVal, Mode=OneWay}" />
+                                    <controls:MiniBars
+                                        Width="52"
+                                        Height="6"
+                                        VerticalAlignment="Center"
+                                        Fill="{DynamicResource AppTextPrimary}"
+                                        IsVisible="{Binding Speed, Converter={StaticResource PositiveToBool}}"
+                                        Max="100"
+                                        Segments="1"
+                                        Value="{Binding Speed}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
 
                     <DataGridTemplateColumn
                         Header="{x:Static resx:ResUI.LvTestIpInfo}"
                         SortMemberPath="IpInfo"
-                        Tag="IpInfo">
+                        Tag="IpInfo"
+                        IsVisible="False">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock
@@ -374,27 +513,39 @@
                         Binding="{Binding TodayUp}"
                         Header="{x:Static resx:ResUI.LvTodayUploadDataAmount}"
                         IsReadOnly="True"
-                        Tag="TodayUp" />
+                        Tag="TodayUp" IsVisible="False" />
                     <DataGridTextColumn
                         Width="100"
                         Binding="{Binding TodayDown}"
                         Header="{x:Static resx:ResUI.LvTodayDownloadDataAmount}"
                         IsReadOnly="True"
-                        Tag="TodayDown" />
+                        Tag="TodayDown" IsVisible="False" />
                     <DataGridTextColumn
                         Width="100"
                         Binding="{Binding TotalUp}"
                         Header="{x:Static resx:ResUI.LvTotalUploadDataAmount}"
                         IsReadOnly="True"
-                        Tag="TotalUp" />
+                        Tag="TotalUp" IsVisible="False" />
                     <DataGridTextColumn
                         Width="100"
                         Binding="{Binding TotalDown}"
                         Header="{x:Static resx:ResUI.LvTotalDownloadDataAmount}"
                         IsReadOnly="True"
-                        Tag="TotalDown" />
+                        Tag="TotalDown" IsVisible="False" />
                 </DataGrid.Columns>
             </DataGrid>
-        </DockPanel>
-    </Grid>
+                <TextBlock
+                    x:Name="txtEmptyState"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontSize="12.5"
+                    Foreground="{DynamicResource AppTextSecondary}"
+                    IsHitTestVisible="False"
+                    IsVisible="False"
+                    Text="暂无节点" />
+            </Grid>
+                </Border>
+            </DockPanel>
+            </Grid>
 </UserControl>
+

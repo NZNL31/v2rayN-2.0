@@ -1,4 +1,4 @@
-namespace ServiceLib.Manager;
+﻿namespace ServiceLib.Manager;
 
 public class StatisticsManager
 {
@@ -19,13 +19,12 @@ public class StatisticsManager
     {
         _config = config;
         _updateFunc = updateFunc;
-        if (config.GuiItem.EnableStatistics || _config.GuiItem.DisplayRealTimeSpeed)
-        {
-            await InitData();
 
-            _statisticsXray = new StatisticsXrayService(config, UpdateServerStatHandler);
-            _statisticsSingbox = new StatisticsSingboxService(config, UpdateServerStatHandler);
-        }
+        // 状态栏要显示实时速率，所以总是采集；是否按节点统计由 EnableStatistics 决定
+        await InitData();
+
+        _statisticsXray = new StatisticsXrayService(config, UpdateServerStatHandler);
+        _statisticsSingbox = new StatisticsSingboxService(config, UpdateServerStatHandler);
     }
 
     public void Close()
@@ -89,6 +88,13 @@ public class StatisticsManager
 
     private async Task InitData()
     {
+        if (!_config.GuiItem.EnableStatistics)
+        {
+            // 未开启按节点统计：不读不写数据库，只为状态栏提供实时速率
+            _lstServerStat = [];
+            return;
+        }
+
         await SQLiteHelper.Instance.ExecuteAsync($"delete from ServerStatItem where indexId not in ( select indexId from ProfileItem )");
 
         var ticks = DateTime.Now.Date.Ticks;
@@ -104,6 +110,14 @@ public class StatisticsManager
 
     private async Task UpdateServerStat(ServerSpeedItem server)
     {
+        if (!_config.GuiItem.EnableStatistics)
+        {
+            // 不做按节点统计，只把实时速率推给界面
+            server.IndexId = _config.IndexId;
+            await _updateFunc?.Invoke(server);
+            return;
+        }
+
         await GetServerStatItem(_config.IndexId);
 
         if (_serverStatItem is null)

@@ -1,4 +1,4 @@
-namespace ServiceLib.Models.Configs;
+﻿namespace ServiceLib.Models.Configs;
 
 public class CoreBasicItem
 {
@@ -97,6 +97,9 @@ public class UIItem
     public List<ColumnItem> MainColumnItem { get; set; }
     public List<WindowSizeItem> WindowSizeItem { get; set; }
     public bool HideColumnIpInfo { get; set; }
+
+    /// <summary>右侧信息面板是否折叠（默认折叠，需要时手动展开）</summary>
+    public bool SidePanelCollapsed { get; set; } = true;
 }
 
 public class ConstItem
@@ -167,6 +170,9 @@ public class ColumnItem
     public string Name { get; set; }
     public int Width { get; set; }
     public int Index { get; set; }
+
+    /// <summary>弹性列（别名/地址）记住的宽度比例，0 表示未设置</summary>
+    public double Ratio { get; set; }
 }
 
 public class Mux4RayItem
@@ -246,6 +252,8 @@ public class WindowSizeItem
     public string TypeName { get; set; }
     public int Width { get; set; }
     public int Height { get; set; }
+    public int X { get; set; }
+    public int Y { get; set; }
 }
 
 public class SimpleDNSItem

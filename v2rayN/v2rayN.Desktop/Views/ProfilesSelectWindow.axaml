@@ -14,11 +14,16 @@
     x:DataType="vms:ProfilesSelectViewModel"
     Design.DataContext="{x:Static dd:DesignData.ProfilesSelect}"
     WindowStartupLocation="CenterScreen"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    xmlns:chrome="clr-namespace:v2rayN.Desktop.Views.Chrome"
+    WindowDecorations="None">
 
     <Window.Resources>
         <conv:DelayColorConverter x:Key="DelayColorConverter" />
     </Window.Resources>
+<DockPanel>
+<chrome:WindowTitleBar DockPanel.Dock="Top" />
+
 
     <DockPanel Margin="{StaticResource Margin8}">
         <StackPanel
@@ -153,4 +158,5 @@
             </DockPanel>
         </Grid>
     </DockPanel>
+</DockPanel>
 </Window>

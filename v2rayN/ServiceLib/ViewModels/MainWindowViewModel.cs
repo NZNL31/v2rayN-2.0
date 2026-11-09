@@ -1,4 +1,4 @@
-namespace ServiceLib.ViewModels;
+﻿namespace ServiceLib.ViewModels;
 
 public partial class MainWindowViewModel : MyReactiveObject
 {
@@ -269,6 +269,19 @@ public partial class MainWindowViewModel : MyReactiveObject
             .ObserveOn(RxSchedulers.MainThreadScheduler)
             .Subscribe(bl => BlNewUpdate = bl);
 
+        // 工具栏「更新当前订阅」：先直连，只有完全失败才走代理（少拉一遍、少动一次系统代理）
+        AppEvents.SubGroupUpdateBothRequested
+            .AsObservable()
+            .ObserveOn(RxSchedulers.MainThreadScheduler)
+            .SubscribeAsync(async _ =>
+            {
+                var ok = await UpdateSubscriptionProcess(_config.SubIndexId, false);
+                if (!ok)
+                {
+                    await UpdateSubscriptionProcess(_config.SubIndexId, true);
+                }
+            });
+
         #endregion AppEvents
 
         ProfilesViewModel.RefreshServersRequested
@@ -338,10 +351,8 @@ public partial class MainWindowViewModel : MyReactiveObject
         await CertPemManager.Instance.Init(_config);
         TaskManager.Instance.RegUpdateTask(_config, UpdateTaskHandler);
 
-        if (_config.GuiItem.EnableStatistics || _config.GuiItem.DisplayRealTimeSpeed)
-        {
-            await StatisticsManager.Instance.Init(_config, UpdateStatisticsHandler);
-        }
+        // 总是初始化：状态栏的实时速率需要它（关闭统计时不会写数据库）
+        await StatisticsManager.Instance.Init(_config, UpdateStatisticsHandler);
         await RefreshServersDispatcherAsync();
 
         await Reload();
@@ -499,9 +510,35 @@ public partial class MainWindowViewModel : MyReactiveObject
             }
             stringData = result;
         }
+
+        // 剪贴板里是订阅地址：已存在就直接切过去，避免"导入成功"却什么都没发生
+        var trimmed = stringData.Trim();
+        var isSubUrl = trimmed.StartsWith(Global.HttpsProtocol) || trimmed.StartsWith(Global.HttpProtocol);
+        if (isSubUrl)
+        {
+            var existSub = await ConfigHandler.GetSubItemByUrl(trimmed);
+            if (existSub != null)
+            {
+                _config.SubIndexId = existSub.Id;
+                await RefreshSubscriptions();
+                await RefreshServersDispatcherAsync();
+                NoticeManager.Instance.Enqueue($"该订阅已存在，已切换到：{existSub.Remarks}");
+                return;
+            }
+        }
+
         var ret = await ConfigHandler.AddBatchServers(_config, stringData, _config.SubIndexId, false);
         if (ret > 0)
         {
+            // 新建的订阅：直接切到新分组，用户能马上看到
+            if (isSubUrl)
+            {
+                var newSub = await ConfigHandler.GetSubItemByUrl(trimmed);
+                if (newSub != null)
+                {
+                    _config.SubIndexId = newSub.Id;
+                }
+            }
             await RefreshSubscriptions();
             await RefreshServersDispatcherAsync();
             NoticeManager.Instance.Enqueue(string.Format(ResUI.SuccessfullyImportedServerViaClipboard, ret));
@@ -576,9 +613,11 @@ public partial class MainWindowViewModel : MyReactiveObject
         }
     }
 
-    public async Task UpdateSubscriptionProcess(string subId, bool blProxy)
+    public async Task<bool> UpdateSubscriptionProcess(string subId, bool blProxy)
     {
-        await Task.Run(async () => await SubscriptionHandler.UpdateProcess(_config, subId, blProxy, UpdateTaskHandler));
+        var success = false;
+        await Task.Run(async () => success = await SubscriptionHandler.UpdateProcess(_config, subId, blProxy, UpdateTaskHandler));
+        return success;
     }
 
     #endregion Subscription

@@ -378,10 +378,27 @@ public partial class ProfilesViewModel : MyReactiveObject
         await DispatcherRefreshServersBizInteraction.HandleSafe(RxVoid.Default);
     }
 
+    /// <summary>
+    /// 保存订阅分组的排序（左侧导航拖拽换位后调用）
+    /// </summary>
+    public async Task SaveSubOrderAsync()
+    {
+        var list = SubItems.Where(t => t.Id.IsNotEmpty()).ToList();
+        for (var i = 0; i < list.Count; i++)
+        {
+            list[i].Sort = i + 1;
+        }
+
+        if (list.Count > 0)
+        {
+            await SQLiteHelper.Instance.UpdateAllAsync(list);
+        }
+    }
     public async Task RefreshSubscriptions()
     {
         var subItems = await AppManager.Instance.SubItems();
         subItems.Insert(0, new SubItem { Remarks = ResUI.AllGroupServers });
+
 
         SubItems.ReplaceRange(subItems);
 

@@ -1,4 +1,6 @@
 using Avalonia.Controls.Notifications;
+using Avalonia.Media;
+using Avalonia.VisualTree;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
 using DialogHostAvalonia;
@@ -30,13 +32,18 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
 
         KeyDown += MainWindow_KeyDown;
         menuSettingsSetUWP.Click += MenuSettingsSetUWP_Click;
-        menuPromotion.Click += MenuPromotion_Click;
         menuCheckUpdate.Click += MenuCheckUpdate_Click;
         btnNewUpdate.Click += MenuCheckUpdate_Click;
         menuBackupAndRestore.Click += MenuBackupAndRestore_Click;
         menuClose.Click += MenuClose_Click;
 
         conTheme.Content ??= new ThemeSettingView();
+
+        lstGroupRail.AddHandler(PointerPressedEvent, RailGroup_PointerPressed, RoutingStrategies.Tunnel | RoutingStrategies.Bubble, true);
+        lstGroupRail.AddHandler(PointerMovedEvent, RailGroup_PointerMoved, RoutingStrategies.Tunnel | RoutingStrategies.Bubble, true);
+        lstGroupRail.AddHandler(PointerReleasedEvent, RailGroup_PointerReleased, RoutingStrategies.Tunnel | RoutingStrategies.Bubble, true);
+
+        // 导轨一级入口统一用 MenuFlyout 弹出（见 BtnRailConfig_Click）
 
         this.WhenActivated(disposables =>
         {
@@ -65,8 +72,6 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
             this.BindCommand(ViewModel, vm => vm.SubSettingCmd, v => v.menuSubSetting).DisposeWith(disposables);
             this.BindCommand(ViewModel, vm => vm.SubUpdateCmd, v => v.menuSubUpdate).DisposeWith(disposables);
             this.BindCommand(ViewModel, vm => vm.SubUpdateViaProxyCmd, v => v.menuSubUpdateViaProxy).DisposeWith(disposables);
-            this.BindCommand(ViewModel, vm => vm.SubGroupUpdateCmd, v => v.menuSubGroupUpdate).DisposeWith(disposables);
-            this.BindCommand(ViewModel, vm => vm.SubGroupUpdateViaProxyCmd, v => v.menuSubGroupUpdateViaProxy).DisposeWith(disposables);
 
             //setting
             this.BindCommand(ViewModel, vm => vm.OptionSettingCmd, v => v.menuOptionSetting).DisposeWith(disposables);
@@ -246,9 +251,252 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
         }
     }
 
-    private void MenuPromotion_Click(object? sender, RoutedEventArgs e)
+    private ServiceLib.Models.Entities.SubItem? _railDragSub;
+    private ServiceLib.Models.Entities.SubItem? _railSelectedBefore;
+    private Point _railDragStart;
+    private bool _railDragMoved;
+
+    private void RailGroup_PointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        ProcUtils.ProcessStart($"{Utils.Base64Decode(Global.PromotionUrl)}?t={DateTime.Now.Ticks}");
+        _railDragSub = null;
+        _railDragMoved = false;
+
+        if (!e.GetCurrentPoint(lstGroupRail).Properties.IsLeftButtonPressed)
+        {
+            return;
+        }
+
+        var container = (e.Source as Visual)?.FindAncestorOfType<ListBoxItem>();
+        if (container?.DataContext is not ServiceLib.Models.Entities.SubItem sub || sub.Id.IsNullOrEmpty())
+        {
+            return;
+        }
+
+        _railDragSub = sub;
+        _railSelectedBefore = ViewModel?.ProfilesViewModel?.SelectedSub;
+        _railDragStart = e.GetPosition(lstGroupRail);
+    }
+
+    private void RailGroup_PointerMoved(object? sender, PointerEventArgs e)
+    {
+        if (_railDragSub is null || !e.GetCurrentPoint(lstGroupRail).Properties.IsLeftButtonPressed)
+        {
+            return;
+        }
+
+        var pos = e.GetPosition(lstGroupRail);
+        if (!_railDragMoved && Math.Abs(pos.Y - _railDragStart.Y) < 5)
+        {
+            return;
+        }
+
+        if (!_railDragMoved)
+        {
+            _railDragMoved = true;
+            e.Pointer.Capture(lstGroupRail);
+        }
+    }
+
+    private async void RailGroup_PointerReleased(object? sender, PointerReleasedEventArgs e)
+    {
+        var moved = _railDragMoved;
+        var item = _railDragSub;
+        _railDragSub = null;
+        _railDragMoved = false;
+        e.Pointer.Capture(null);
+
+        var vm = ViewModel?.ProfilesViewModel;
+        if (!moved || item is null || vm is null)
+        {
+            _railSelectedBefore = null;
+            return;
+        }
+
+        var items = vm.SubItems;
+        var from = items.IndexOf(item);
+        var hit = lstGroupRail.InputHitTest(e.GetPosition(lstGroupRail)) as Visual;
+        var container = hit?.FindAncestorOfType<ListBoxItem>();
+        var target = container is null ? -1 : lstGroupRail.IndexFromContainer(container);
+
+        if (from >= 1 && target >= 1 && target < items.Count && target != from)
+        {
+            items.Move(from, target);
+            await vm.SaveSubOrderAsync();
+        }
+
+        if (_railSelectedBefore is not null && !ReferenceEquals(vm.SelectedSub, _railSelectedBefore))
+        {
+            vm.SelectedSub = _railSelectedBefore;
+        }
+
+        _railSelectedBefore = null;
+    }
+    private void Header_PointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+        {
+            return;
+        }
+
+        // 点在菜单/按钮上时不能启动窗口拖动，否则指针被窗口捕获，
+        // 下拉菜单里的条目会点不动
+        for (var cur = e.Source as Visual; cur is not null && !ReferenceEquals(cur, appHeader); cur = cur.GetVisualParent())
+        {
+            if (cur is Menu or MenuItem or Button or ToggleButton)
+            {
+                return;
+            }
+        }
+
+        if (e.ClickCount == 2)
+        {
+            WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+            return;
+        }
+
+        BeginMoveDrag(e);
+    }
+
+    private void BtnWinMin_Click(object? sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
+
+    private void BtnWinMax_Click(object? sender, RoutedEventArgs e) =>
+        WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+
+    private void BtnWinClose_Click(object? sender, RoutedEventArgs e) => Close();
+
+    private void ResizeTop_PointerPressed(object? sender, PointerPressedEventArgs e) => BeginResizeDrag(WindowEdge.North, e);
+
+    private void ResizeBottom_PointerPressed(object? sender, PointerPressedEventArgs e) => BeginResizeDrag(WindowEdge.South, e);
+
+    private void ResizeLeft_PointerPressed(object? sender, PointerPressedEventArgs e) => BeginResizeDrag(WindowEdge.West, e);
+
+    private void ResizeRight_PointerPressed(object? sender, PointerPressedEventArgs e) => BeginResizeDrag(WindowEdge.East, e);
+
+    private void ResizeTopLeft_PointerPressed(object? sender, PointerPressedEventArgs e) => BeginResizeDrag(WindowEdge.NorthWest, e);
+
+    private void ResizeTopRight_PointerPressed(object? sender, PointerPressedEventArgs e) => BeginResizeDrag(WindowEdge.NorthEast, e);
+
+    private void ResizeBottomLeft_PointerPressed(object? sender, PointerPressedEventArgs e) => BeginResizeDrag(WindowEdge.SouthWest, e);
+
+    private void ResizeBottomRight_PointerPressed(object? sender, PointerPressedEventArgs e) => BeginResizeDrag(WindowEdge.SouthEast, e);
+
+    /// <summary>顶栏齿轮按钮：弹出原「设置」菜单</summary>
+    private void BtnHeaderSetting_Click(object? sender, RoutedEventArgs e)
+    {
+        _sideMenuAnchor = sender as Control;
+        ShowMenuAt(menuSetting, PlacementMode.BottomEdgeAlignedRight);
+    }
+
+    /// <summary>顶栏纸飞机按钮：弹出原「帮助」菜单</summary>
+    private void BtnHeaderHelp_Click(object? sender, RoutedEventArgs e)
+    {
+        _sideMenuAnchor = sender as Control;
+        ShowMenuAt(menuHelp, PlacementMode.BottomEdgeAlignedRight);
+    }
+
+    /// <summary>左栏「订阅分组」小标题右侧的 ⋯：弹出订阅分组菜单</summary>
+    private void BtnRailSubMenu_Click(object? sender, RoutedEventArgs e)
+    {
+        _sideMenuAnchor = sender as Control;
+        ShowMenuAt(menuSubscription, PlacementMode.BottomEdgeAlignedRight);
+    }
+
+    /// <summary>左侧栏「配置项」按钮：展开原配置项菜单</summary>
+    public void OpenConfigMenu(Control? anchor = null)
+    {
+        _sideMenuAnchor = anchor;
+        ShowMenuAt(menuServers);
+    }
+
+    /// <summary>左侧栏「设置」按钮：展开原设置菜单</summary>
+    public void OpenSettingMenu(Control? anchor = null)
+    {
+        _sideMenuAnchor = anchor;
+        ShowMenuAt(menuSetting);
+    }
+
+    /// <summary>左栏「配置项」按钮：弹出原配置项菜单（向右展开）</summary>
+    private void BtnRailConfig_Click(object? sender, RoutedEventArgs e)
+    {
+        _sideMenuAnchor = sender as Control;
+        ShowMenuAt(menuServers, PlacementMode.RightEdgeAlignedTop);
+    }
+    /// <summary>
+    /// 把某个菜单的子项临时搬进 MenuFlyout，在锚点旁边弹出；关闭后再搬回去
+    /// </summary>
+    private void ShowMenuAt(MenuItem source, PlacementMode placement = PlacementMode.BottomEdgeAlignedLeft)
+    {
+        try
+        {
+            var anchor = _sideMenuAnchor;
+            if (anchor is null)
+            {
+                source.Open();
+                return;
+            }
+
+            var flyout = new MenuFlyout { Placement = placement };
+            var moved = new List<object>();
+
+            while (source.Items.Count > 0)
+            {
+                var child = source.Items[0];
+                source.Items.RemoveAt(0);
+                flyout.Items.Add(child);
+                moved.Add(child);
+            }
+
+            flyout.Closed += (_, _) =>
+            {
+                foreach (var item in moved)
+                {
+                    flyout.Items.Remove(item);
+                    source.Items.Add(item);
+                }
+            };
+
+            flyout.ShowAt(anchor);
+        }
+        catch (Exception ex)
+        {
+            Logging.SaveLog("ShowMenuAt", ex);
+            source.Open();
+        }
+    }
+    private Control? _sideMenuAnchor;
+
+    private bool _logCollapsed = true;
+
+    private void BtnToggleLog_Click(object? sender, RoutedEventArgs e) => ToggleSidePanel();
+
+    private void BtnToggleSide_Click(object? sender, RoutedEventArgs e) => ToggleSidePanel();
+
+    private void ToggleSidePanel()
+    {
+        _logCollapsed = !_logCollapsed;
+        ApplySidePanelState();
+
+        _config.UiItem.SidePanelCollapsed = _logCollapsed;
+        _ = ConfigHandler.SaveConfig(_config);
+    }
+
+    /// <summary>按 _logCollapsed 应用右侧信息面板的显示/隐藏</summary>
+    private void ApplySidePanelState()
+    {
+        if (gridMain.RowDefinitions.Count > 1)
+        {
+            gridMain.RowDefinitions[1].Height = _logCollapsed ? new GridLength(0) : new GridLength(10);
+            gridMain.RowDefinitions[2].Height = _logCollapsed ? new GridLength(0) : new GridLength(1, GridUnitType.Star);
+            gridSplitter.IsVisible = !_logCollapsed;
+        }
+        else if (gridMain.ColumnDefinitions.Count > 1)
+        {
+            gridMain.ColumnDefinitions[1].Width = _logCollapsed ? new GridLength(0) : new GridLength(10);
+            gridMain.ColumnDefinitions[2].Width = _logCollapsed ? new GridLength(0) : new GridLength(1, GridUnitType.Star);
+            gridSplitter.IsVisible = !_logCollapsed;
+        }
+
+        txtToggleGlyph.RenderTransform = new RotateTransform(_logCollapsed ? 180 : 0);
     }
 
     private void MenuSettingsSetUWP_Click(object? sender, RoutedEventArgs e)
@@ -392,11 +640,24 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
                 gridMain.RowDefinitions[2].Height = new GridLength(_config.UiItem.MainGirdHeight2, GridUnitType.Star);
             }
         }
+
+        // 右侧信息面板默认折叠，只有用户主动展开时才显示
+        _logCollapsed = _config.UiItem.SidePanelCollapsed;
+        ApplySidePanelState();
     }
 
     private void StorageUI()
     {
-        ConfigHandler.SaveWindowSizeItem(_config, GetType().Name, Width, Height);
+        if (WindowState == WindowState.Normal)
+        {
+            ConfigHandler.SaveWindowSizeItem(_config, GetType().Name, Width, Height, Position.X, Position.Y);
+        }
+
+        // 折叠状态下宽度/高度为 0，别把原来的分栏比例覆盖掉
+        if (_logCollapsed)
+        {
+            return;
+        }
 
         if (_config.UiItem.MainGirdOrientation == EGirdOrientation.Horizontal)
         {
@@ -434,14 +695,14 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
         {
             case EGirdOrientation.Horizontal:
             default:
-                gridMain.ColumnDefinitions = new ColumnDefinitions("1*,10,1*");
+                gridMain.ColumnDefinitions = new ColumnDefinitions("2.2*,10,1*");
                 gridMain.RowDefinitions = new RowDefinitions("1*");
                 Grid.SetColumn(tabProfiles, 0);
                 Grid.SetColumn(gridSplitter, 1);
-                Grid.SetColumn(tabDockPanel, 2);
+                Grid.SetColumn(tabDockPanelHost, 2);
                 Grid.SetRow(tabProfiles, 0);
                 Grid.SetRow(gridSplitter, 0);
-                Grid.SetRow(tabDockPanel, 0);
+                Grid.SetRow(tabDockPanelHost, 0);
                 tabStripH.IsVisible = true;
                 tabStripV.IsVisible = false;
                 gridSplitter.IsVisible = true;
@@ -485,10 +746,10 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
                 gridMain.ColumnDefinitions = new ColumnDefinitions("1*");
                 Grid.SetRow(tabProfiles, 0);
                 Grid.SetRow(gridSplitter, 1);
-                Grid.SetRow(tabDockPanel, 2);
+                Grid.SetRow(tabDockPanelHost, 2);
                 Grid.SetColumn(tabProfiles, 0);
                 Grid.SetColumn(gridSplitter, 0);
-                Grid.SetColumn(tabDockPanel, 0);
+                Grid.SetColumn(tabDockPanelHost, 0);
                 tabStripV.IsVisible = true;
                 tabStripH.IsVisible = false;
                 gridSplitter.IsVisible = true;
@@ -532,10 +793,10 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
                 gridMain.ColumnDefinitions = new ColumnDefinitions("1*");
                 Grid.SetColumn(tabProfiles, 0);
                 Grid.SetColumn(gridSplitter, 0);
-                Grid.SetColumn(tabDockPanel, 0);
+                Grid.SetColumn(tabDockPanelHost, 0);
                 Grid.SetRow(tabProfiles, 0);
                 Grid.SetRow(gridSplitter, 0);
-                Grid.SetRow(tabDockPanel, 0);
+                Grid.SetRow(tabDockPanelHost, 0);
                 tabStripV.IsVisible = true;
                 tabStripH.IsVisible = false;
                 gridSplitter.IsVisible = false;

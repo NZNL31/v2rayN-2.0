@@ -1,4 +1,4 @@
-using DialogHostAvalonia;
+﻿using DialogHostAvalonia;
 using v2rayN.Desktop.Common;
 
 namespace v2rayN.Desktop.Views;
@@ -58,17 +58,43 @@ public partial class StatusBarView : ReactiveUserControl<StatusBarViewModel>
         }
 
         // Because this view has not yet been initialized when DispatcherRefreshIconInteraction is first called.
+        // 延后一帧，等托盘图标和主窗口都就绪后再刷
         RefreshIcon();
     }
 
     private void RefreshIcon()
     {
-        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        try
         {
-            desktop.MainWindow.Icon = AvaUtils.GetAppIcon(_config.SystemProxyItem.SysProxyType);
+            if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                Logging.SaveLog("RefreshIcon: no desktop lifetime");
+                return;
+            }
+
+            var type = _config.SystemProxyItem.SysProxyType;
+            var icon = AvaUtils.GetAppIcon(type);
+
+            if (desktop.MainWindow is not null)
+            {
+                desktop.MainWindow.Icon = icon;
+            }
+
             var iconslist = TrayIcon.GetIcons(Application.Current);
-            iconslist[0].Icon = desktop.MainWindow.Icon;
-            TrayIcon.SetIcons(Application.Current, iconslist);
+            if (iconslist is { Count: > 0 })
+            {
+                // 图标没变就不重复设置，减少托盘图标重建
+                if (!ReferenceEquals(iconslist[0].Icon, icon))
+                {
+                    iconslist[0].Icon = icon;
+                }
+            }
+
+            Logging.SaveLog($"RefreshIcon type={type} idx={(int)type + 1} trays={iconslist?.Count ?? 0} mainWin={desktop.MainWindow is not null}");
+        }
+        catch (Exception ex)
+        {
+            Logging.SaveLog("RefreshIcon", ex);
         }
     }
 
