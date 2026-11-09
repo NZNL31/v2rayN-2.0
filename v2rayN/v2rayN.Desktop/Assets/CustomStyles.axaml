@@ -235,4 +235,15 @@
         <Setter Property="Foreground" Value="{DynamicResource AppTextPrimary}" />
     </Style>
 
+    <!--  分组标题行：加粗 + 主色  -->
+    <Style Selector="TextBlock.header">
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{DynamicResource AppTextPrimary}" />
+    </Style>
+
+    <!--  分组标题行里其它列的单元格隐藏  -->
+    <Style Selector="TextBlock.headerEmpty">
+        <Setter Property="IsVisible" Value="False" />
+    </Style>
+
 </Styles>

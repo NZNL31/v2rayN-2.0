@@ -19,6 +19,7 @@
         <conv:DelayColorConverter x:Key="DelayColorConverter" />
     <conv:PositiveToBoolConverter x:Key="PositiveToBool" />
         <conv:RegionConverter x:Key="Region" />
+        <conv:GroupHeaderConverter x:Key="IsGroupHeader" />
 
         <!--  左侧导航项：圆角胶囊 + 选中浅蓝底  -->
         <ControlTheme x:Key="NavItemTheme" TargetType="ListBoxItem">
@@ -339,6 +340,7 @@
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         TextAlignment="Center"
+                                        Classes.headerEmpty="{Binding Converter={StaticResource IsGroupHeader}}"
                                         Text="{Binding ConfigType}" />
                                 </Grid>
                             </DataTemplate>
@@ -370,7 +372,12 @@
                                             <TextBlock Text="{Binding Remarks, Converter={StaticResource Region}}" />
                                         </Border>
                                     </StackPanel>
-                                    <TextBlock Grid.Column="1" Classes.active="{Binding IsActive}" VerticalAlignment="Center" Text="{Binding Remarks}"
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        VerticalAlignment="Center"
+                                        Classes.active="{Binding IsActive}"
+                                        Classes.header="{Binding Converter={StaticResource IsGroupHeader}}"
+                                        Text="{Binding Remarks}"
                                         TextTrimming="CharacterEllipsis" />
                                 </Grid>
                             </DataTemplate>
@@ -389,6 +396,7 @@
                                 <TextBlock
                                     Margin="{StaticResource MarginLr8}"
                                     VerticalAlignment="Center"
+                                    Classes.headerEmpty="{Binding Converter={StaticResource IsGroupHeader}}"
                                     Text="{Binding Address}"
                                     TextTrimming="CharacterEllipsis" />
                             </DataTemplate>
@@ -406,6 +414,7 @@
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
                                     TextAlignment="Center"
+                                    Classes.headerEmpty="{Binding Converter={StaticResource IsGroupHeader}}"
                                     Text="{Binding Port}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>

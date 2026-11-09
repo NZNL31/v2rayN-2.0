@@ -26,6 +26,19 @@ public partial class ProfilesViewModel : MyReactiveObject
 
     public BulkObservableCollection<ProfileItemModel> ProfileItems { get; } = [];
 
+    /// <summary>表格实际显示的列表：按分组插入可折叠标题行（标题行是哨兵项，不参与任何操作）</summary>
+    public BulkObservableCollection<ProfileItemModel> DisplayItems { get; } = [];
+
+    /// <summary>分组标题行的 IndexId 前缀</summary>
+    public const string GroupHeaderPrefix = "grp:";
+
+    /// <summary>是否是分组标题行</summary>
+    public static bool IsGroupHeader(ProfileItemModel? item) =>
+        item?.IndexId is { } id && id.StartsWith(GroupHeaderPrefix, StringComparison.Ordinal);
+
+    /// <summary>被折叠的分组（subid）</summary>
+    private readonly HashSet<string> _collapsedGroups = [];
+
     public BulkObservableCollection<SubItem> SubItems { get; } = [];
 
     [Reactive]
@@ -377,7 +390,71 @@ public partial class ProfilesViewModel : MyReactiveObject
             SelectedProfile = selected ?? lstModel.First();
         }
 
+        BuildDisplayItems();
+
         await DispatcherRefreshServersBizInteraction.HandleSafe(RxVoid.Default);
+    }
+
+    /// <summary>
+    /// 重建表格显示列表：未选中具体分组（「所有」）时按订阅分组插入可折叠标题行，
+    /// 选中某个分组时就是平铺列表。
+    /// </summary>
+    private void BuildDisplayItems()
+    {
+        try
+        {
+            if (_config.SubIndexId.IsNotEmpty() || ProfileItems.Count == 0)
+            {
+                DisplayItems.ReplaceRange(ProfileItems.ToList());
+                return;
+            }
+
+            var rows = new List<ProfileItemModel>(ProfileItems.Count + 16);
+            foreach (var group in ProfileItems.GroupBy(t => t.Subid ?? string.Empty))
+            {
+                var subid = group.Key;
+                var items = group.ToList();
+                var name = items[0].SubRemarks;
+                if (name.IsNullOrEmpty())
+                {
+                    name = ResUI.AllGroupServers;
+                }
+
+
+                var collapsed = _collapsedGroups.Contains(subid);
+
+                rows.Add(new ProfileItemModel
+                {
+                    IndexId = GroupHeaderPrefix + subid,
+                    Subid = subid,
+                    Remarks = $"{(collapsed ? "▸" : "▾")} {name} · {items.Count}",
+                    Address = string.Empty,
+                    Port = 0,
+                    SubRemarks = string.Empty
+                });
+
+                if (!collapsed)
+                {
+                    rows.AddRange(items);
+                }
+            }
+
+            DisplayItems.ReplaceRange(rows);
+        }
+        catch (Exception ex)
+        {
+            Logging.SaveLog("BuildDisplayItems", ex);
+        }
+    }
+
+    /// <summary>折叠 / 展开某个分组</summary>
+    public void ToggleGroup(string subid)
+    {
+        if (!_collapsedGroups.Remove(subid))
+        {
+            _collapsedGroups.Add(subid);
+        }
+        BuildDisplayItems();
     }
 
     /// <summary>

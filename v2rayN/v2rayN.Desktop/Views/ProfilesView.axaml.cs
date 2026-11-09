@@ -32,7 +32,7 @@ public partial class ProfilesView : ReactiveUserControl<ProfilesViewModel>
 
         this.WhenActivated(disposables =>
         {
-            this.OneWayBind(ViewModel, vm => vm.ProfileItems, v => v.lstProfiles.ItemsSource).DisposeWith(disposables);
+            this.OneWayBind(ViewModel, vm => vm.DisplayItems, v => v.lstProfiles.ItemsSource).DisposeWith(disposables);
             this.Bind(ViewModel, vm => vm.SelectedProfile, v => v.lstProfiles.SelectedItem).DisposeWith(disposables);
 
             this.Bind(ViewModel, vm => vm.ServerFilter, v => v.txtServerFilter.Text).DisposeWith(disposables);
@@ -197,6 +197,11 @@ public partial class ProfilesView : ReactiveUserControl<ProfilesViewModel>
             return;
         }
 
+        if (ProfilesViewModel.IsGroupHeader(item))
+        {
+            return;
+        }
+
         ViewModel.SelectedProfile = item;
         lstProfiles.SelectedItem = item;
 
@@ -256,16 +261,50 @@ public partial class ProfilesView : ReactiveUserControl<ProfilesViewModel>
         UpdateEmptyState();
     }
 
+    private bool _handlingHeaderClick;
+
     private void lstProfiles_SelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
-        if (ViewModel != null)
+        if (ViewModel is null || _handlingHeaderClick)
         {
-            ViewModel.SelectedProfiles = lstProfiles.SelectedItems.Cast<ProfileItemModel>().ToList();
+            return;
         }
+
+        var selected = lstProfiles.SelectedItems?.Cast<ProfileItemModel>().ToList() ?? [];
+
+        // 点到分组标题行：折叠 / 展开，然后把选中还原回去
+        var header = selected.FirstOrDefault(ProfilesViewModel.IsGroupHeader);
+        if (header is not null)
+        {
+            _handlingHeaderClick = true;
+            try
+            {
+                var subid = header.Subid ?? string.Empty;
+                ViewModel.ToggleGroup(subid);
+                Dispatcher.UIThread.Post(() =>
+                {
+                    lstProfiles.SelectedItem = ViewModel.SelectedProfile;
+                    _handlingHeaderClick = false;
+                }, DispatcherPriority.Background);
+            }
+            catch (Exception ex)
+            {
+                _handlingHeaderClick = false;
+                Logging.SaveLog(_tag, ex);
+            }
+            return;
+        }
+
+        ViewModel.SelectedProfiles = selected;
     }
 
     private void LstProfiles_DoubleTapped(object? sender, TappedEventArgs e)
     {
+        if (ViewModel?.SelectedProfile is { } cur && ProfilesViewModel.IsGroupHeader(cur))
+        {
+            return;
+        }
+
         var source = e.Source as Border;
         if (source?.Name == "HeaderBackground")
         {
