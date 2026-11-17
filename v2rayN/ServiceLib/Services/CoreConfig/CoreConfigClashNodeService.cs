@@ -348,7 +348,9 @@ public class CoreConfigClashNodeService(CoreConfigContext context)
             }
         }
 
-        sb.AppendLine($"    client-fingerprint: {Q(node.Fingerprint.NullIfEmpty() ?? "chrome")}");
+        // 订阅里会出现 "unsafe" 之类非标准指纹，mihomo 不认识，统一收敛成合法值
+        var fingerprint = Global.GetValidFingerprint(node.Fingerprint) ?? "chrome";
+        sb.AppendLine($"    client-fingerprint: {Q(fingerprint)}");
 
         if (!reality)
         {

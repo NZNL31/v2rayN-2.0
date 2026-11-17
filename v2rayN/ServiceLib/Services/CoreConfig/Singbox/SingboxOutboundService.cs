@@ -468,12 +468,20 @@ public partial class CoreConfigSingboxService
                 tls.fragment = true;
                 tls.record_fragment = true;
             }
-            if (_node.Fingerprint.IsNotEmpty())
+            // 订阅里会出现 "unsafe" 之类非标准指纹，透传给 sing-box 会让整份配置初始化失败；
+            // REALITY 又强制要求 uTLS，所以没有合法指纹时补一个 chrome。
+            var fingerprint = Global.GetValidFingerprint(_node.Fingerprint)
+                              ?? Global.GetValidFingerprint(_config.CoreBasicItem.DefFingerprint);
+            if (fingerprint.IsNullOrEmpty() && _node.StreamSecurity == Global.StreamSecurityReality)
+            {
+                fingerprint = "chrome";
+            }
+            if (fingerprint.IsNotEmpty())
             {
                 tls.utls = new Utls4Sbox()
                 {
                     enabled = true,
-                    fingerprint = _node.Fingerprint.IsNullOrEmpty() ? _config.CoreBasicItem.DefFingerprint : _node.Fingerprint
+                    fingerprint = fingerprint
                 };
             }
             if (_node.StreamSecurity == Global.StreamSecurity)

@@ -424,6 +424,30 @@ public class Global
         EConfigType.HTTP,
     ];
 
+    /// <summary>
+    ///     各内核真正接受的 uTLS 指纹。订阅里偶尔会出现 "unsafe" 这类非标准值，
+    ///     直接透传给 sing-box 会让整个配置初始化失败（一批测速全部没有结果）。
+    /// </summary>
+    public static readonly HashSet<string> ValidFingerprints =
+    [
+        "chrome",
+        "firefox",
+        "safari",
+        "ios",
+        "android",
+        "edge",
+        "360",
+        "qq",
+        "random",
+        "randomized",
+    ];
+
+    public static string? GetValidFingerprint(string? fingerprint)
+    {
+        var fp = fingerprint?.TrimEx();
+        return fp is { Length: > 0 } && ValidFingerprints.Contains(fp) ? fp : null;
+    }
+
     public static readonly List<string> DomainStrategies =
     [
         AsIs,
