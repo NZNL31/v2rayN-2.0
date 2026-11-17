@@ -1,4 +1,4 @@
-﻿namespace ServiceLib;
+namespace ServiceLib;
 
 public class Global
 {
@@ -377,7 +377,8 @@ public class Global
     public static readonly List<string> CoreTypes =
     [
         "Xray",
-        "sing_box"
+        "sing_box",
+        "mihomo"
     ];
 
     public static readonly HashSet<EConfigType> XraySupportConfigType =
@@ -410,6 +411,18 @@ public class Global
     ];
 
     public static readonly HashSet<EConfigType> SingboxOnlyConfigType = SingboxSupportConfigType.Except(XraySupportConfigType).ToHashSet();
+
+    // mihomo 只覆盖这几个协议（不含 WireGuard / TUIC / Anytls / Naive / MASQUE）
+    public static readonly HashSet<EConfigType> MihomoSupportConfigType =
+    [
+        EConfigType.VMess,
+        EConfigType.VLESS,
+        EConfigType.Shadowsocks,
+        EConfigType.Trojan,
+        EConfigType.Hysteria2,
+        EConfigType.SOCKS,
+        EConfigType.HTTP,
+    ];
 
     public static readonly List<string> DomainStrategies =
     [

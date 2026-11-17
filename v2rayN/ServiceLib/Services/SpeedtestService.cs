@@ -609,7 +609,11 @@ public class SpeedtestService(Config config, Func<SpeedTestResult, Task> updateF
 
         pageSize = Math.Max(pageSize, 1);
         var lst1 = lstSelected.Where(t => t.CoreType == ECoreType.Xray).ToList();
-        var lst2 = lstSelected.Where(t => t.CoreType == ECoreType.sing_box).ToList();
+        // mihomo 节点用 sing-box 内核测速（协议覆盖最接近）；整份 Clash 配置没有单节点信息，仍然跳过
+        var lst2 = lstSelected
+            .Where(t => t.CoreType == ECoreType.sing_box
+                        || (t.CoreType == ECoreType.mihomo && t.ConfigType != EConfigType.Custom))
+            .ToList();
 
         for (var num = 0; num < (int)Math.Ceiling(lst1.Count * 1.0 / pageSize); num++)
         {

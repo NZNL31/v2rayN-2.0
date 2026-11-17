@@ -77,6 +77,20 @@ public class NodeValidator
                 v.Error(string.Format(ResUI.MsgCoreNotSupportProtocol, nameof(ECoreType.Xray), item.ConfigType));
             }
         }
+        else if (coreType is ECoreType.mihomo)
+        {
+            if (!Global.MihomoSupportConfigType.Contains(item.ConfigType))
+            {
+                v.Error(string.Format(ResUI.MsgCoreNotSupportProtocol, nameof(ECoreType.mihomo), item.ConfigType));
+            }
+
+            if (item.ConfigType is EConfigType.VMess or EConfigType.VLESS or EConfigType.Trojan
+                && net is not (nameof(ETransport.raw) or "tcp" or nameof(ETransport.ws) or nameof(ETransport.grpc)
+                    or nameof(ETransport.h2)))
+            {
+                v.Error(string.Format(ResUI.MsgCoreNotSupportNetwork, nameof(ECoreType.mihomo), net));
+            }
+        }
 
         // Protocol Specifics
         var protocolExtra = item.GetProtocolExtra();
