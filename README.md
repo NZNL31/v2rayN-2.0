@@ -1,8 +1,8 @@
-# v2rayN 2.0（界面重制分支）
+﻿# v2rayN 2.0（界面重制分支）
 
-基于 [v2rayN](https://github.com/2dust/v2rayN) **7.25.6** 的界面重制分支：只改界面与少量交互，**不动内核、不动协议实现**，可直接替换官方 exe 使用。
+基于 [v2rayN](https://github.com/2dust/v2rayN) **7.25.6** 的界面重制分支：以界面重制为主（2.0.5 起另有 mihomo 内核选项与测速/测延迟修复），**不动协议实现**，可直接替换官方 exe 使用。
 
-当前版本 **2.0.4** ｜ [下载](https://github.com/NZNL31/v2rayN-2.0/releases/latest) ｜ [界面示例](示例.md)
+当前版本 **2.0.5** ｜ [下载](https://github.com/NZNL31/v2rayN-2.0/releases/latest) ｜ [界面示例](示例.md)
 
 > 本仓库不包含任何节点、订阅或配置数据；截图中出现的节点仅为演示用途。
 
