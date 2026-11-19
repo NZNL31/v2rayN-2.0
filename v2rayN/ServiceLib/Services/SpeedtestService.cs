@@ -125,6 +125,10 @@ public class SpeedtestService(Config config, Func<SpeedTestResult, Task> updateF
         catch (Exception ex)
         {
             Logging.SaveLog(_tag, ex);
+            // 整轮异常也要收尾：没跑到的节点必须落一个结果，否则界面上会一直空着/停在「测试中」，
+            // 用户分不清是「没测」还是「节点无效」
+            await SetTestResultAsync(lstSelected.Where(it => !completedIds.ContainsKey(it.IndexId)).ToList(),
+                actionType, ex.Message).ConfigureAwait(false);
             _ = UpdateFunc("", ex.Message);
         }
     }
@@ -138,16 +142,16 @@ public class SpeedtestService(Config config, Func<SpeedTestResult, Task> updateF
             .Select(it => it.IndexId)
             .ToList();
         var profileMap = await AppManager.Instance.GetProfileItemsByIndexIdsAsMap(ids);
+        var lstSkipped = new List<string>();
         for (var i = 0; i < selecteds.Count; i++)
         {
             var it = selecteds[i];
-            if (it.ConfigType == EConfigType.Custom)
+            if (it.ConfigType == EConfigType.Custom || (!it.ConfigType.IsComplexType() && it.Port <= 0))
             {
-                continue;
-            }
-
-            if (!it.ConfigType.IsComplexType() && it.Port <= 0)
-            {
+                if (it.IndexId.IsNotEmpty())
+                {
+                    lstSkipped.Add(it.IndexId);
+                }
                 continue;
             }
 
@@ -166,6 +170,12 @@ public class SpeedtestService(Config config, Func<SpeedTestResult, Task> updateF
 
         //clear test result
         await SetTestResultAsync(lstSelected, actionType, ResUI.Speedtesting).ConfigureAwait(false);
+
+        // 被过滤掉的节点（Custom、端口非法）也写一个「跳过测试」，否则界面上什么都没变，看不出没测过
+        foreach (var indexId in lstSkipped)
+        {
+            await UpdateFunc(indexId, ResUI.SpeedtestingSkip, ResUI.SpeedtestingSkip);
+        }
 
         if (lstSelected.Count > 1 && (actionType == ESpeedActionType.Speedtest || actionType == ESpeedActionType.Mixedtest))
         {
@@ -190,7 +200,8 @@ public class SpeedtestService(Config config, Func<SpeedTestResult, Task> updateF
                 case ESpeedActionType.Speedtest:
                     // A skipped or failed test must not leave the last speed behind for sorting.
                     ProfileExManager.Instance.SetTestSpeed(it.IndexId, 0);
-                    await UpdateFunc(it.IndexId, "", message);
+                    // 延迟列也写一遍：界面上只显示「有数字」的延迟，不写的话这一行看起来就是没测过
+                    await UpdateFunc(it.IndexId, message, message);
                     break;
 
                 case ESpeedActionType.Mixedtest:
@@ -234,6 +245,11 @@ public class SpeedtestService(Config config, Func<SpeedTestResult, Task> updateF
                 catch (Exception ex)
                 {
                     Logging.SaveLog(_tag, ex);
+                    // 解析主机名失败 / 连接异常时也要落一个 -1：否则这一行永远是空的，
+                    // 用户没法判断是「没测」还是「节点无效」
+                    ProfileExManager.Instance.SetTestDelay(item.IndexId, -1);
+                    await UpdateFunc(item.IndexId, "-1");
+                    completedIds.TryAdd(item.IndexId, 0);
                 }
             });
 
@@ -275,7 +291,9 @@ public class SpeedtestService(Config config, Func<SpeedTestResult, Task> updateF
             }
             else
             {
-                await RunMixedTestAsync(lstSelected, completedIds, _config.SpeedTestItem.MixedConcurrencyCount, false, ct);
+                // 只重测失败的这一批：以前传的是整份 lstSelected，会把已经测通的节点又测一遍，
+                // 越往后越慢，看起来就像「卡住 / 测不出来」
+                await RunMixedTestAsync(lstFailed, completedIds, _config.SpeedTestItem.MixedConcurrencyCount, false, ct);
             }
         }
     }
@@ -319,6 +337,10 @@ public class SpeedtestService(Config config, Func<SpeedTestResult, Task> updateF
                 catch (Exception ex)
                 {
                     Logging.SaveLog(_tag, ex);
+                    // 单个节点异常也要留结果（-1），否则这一行看起来像没测过
+                    ProfileExManager.Instance.SetTestDelay(it.IndexId, -1);
+                    await UpdateFunc(it.IndexId, "-1");
+                    completedIds.TryAdd(it.IndexId, 0);
                 }
             });
         }
@@ -329,6 +351,15 @@ public class SpeedtestService(Config config, Func<SpeedTestResult, Task> updateF
         catch (Exception ex)
         {
             Logging.SaveLog(_tag, ex);
+            // 整批配置生成 / 内核启动失败：以前只记日志却当成「成功」，整批节点永远没有结果也没有提示。
+            // 这里标成失败，让上层缩小批量重试，并把原因显示出来
+            await UpdateFunc("", ex.Message);
+            foreach (var it in selecteds.Where(it => !completedIds.ContainsKey(it.IndexId)))
+            {
+                ProfileExManager.Instance.SetTestDelay(it.IndexId, -1);
+                await UpdateFunc(it.IndexId, "-1");
+            }
+            return false;
         }
         finally
         {
@@ -410,6 +441,9 @@ public class SpeedtestService(Config config, Func<SpeedTestResult, Task> updateF
                 catch (Exception ex)
                 {
                     Logging.SaveLog(_tag, ex);
+                    ProfileExManager.Instance.SetTestDelay(it.IndexId, -1);
+                    await UpdateFunc(it.IndexId, "-1");
+                    completedIds.TryAdd(it.IndexId, 0);
                 }
             });
         }
@@ -420,6 +454,13 @@ public class SpeedtestService(Config config, Func<SpeedTestResult, Task> updateF
         catch (Exception ex)
         {
             Logging.SaveLog(_tag, ex);
+            await UpdateFunc("", ex.Message);
+            foreach (var it in selecteds.Where(it => !completedIds.ContainsKey(it.IndexId)))
+            {
+                ProfileExManager.Instance.SetTestDelay(it.IndexId, -1);
+                await UpdateFunc(it.IndexId, "-1");
+            }
+            return false;
         }
         finally
         {
@@ -453,7 +494,10 @@ public class SpeedtestService(Config config, Func<SpeedTestResult, Task> updateF
                 processService = await CoreManager.Instance.LoadCoreConfigSpeedtest(it);
                 if (processService is null)
                 {
-                    await UpdateFunc(it.IndexId, "", ResUI.FailedToRunCore);
+                    // 内核起不来也要留痕（延迟列写 -1），否则这一行看起来像没测过
+                    ProfileExManager.Instance.SetTestDelay(it.IndexId, -1);
+                    await UpdateFunc(it.IndexId, "-1", ResUI.FailedToRunCore);
+                    completedIds.TryAdd(it.IndexId, 0);
                     return;
                 }
 
@@ -468,7 +512,8 @@ public class SpeedtestService(Config config, Func<SpeedTestResult, Task> updateF
                     }
                     else
                     {
-                        await UpdateFunc(it.IndexId, "", ResUI.SpeedtestingSkip);
+                        await UpdateFunc(it.IndexId, ResUI.SpeedtestingSkip, ResUI.SpeedtestingSkip);
+                        completedIds.TryAdd(it.IndexId, 0);
                     }
                 }
             }
@@ -479,6 +524,9 @@ public class SpeedtestService(Config config, Func<SpeedTestResult, Task> updateF
             catch (Exception ex)
             {
                 Logging.SaveLog(_tag, ex);
+                ProfileExManager.Instance.SetTestDelay(it.IndexId, -1);
+                await UpdateFunc(it.IndexId, "-1");
+                completedIds.TryAdd(it.IndexId, 0);
             }
             finally
             {
@@ -573,8 +621,27 @@ public class SpeedtestService(Config config, Func<SpeedTestResult, Task> updateF
 
         if (!IPAddress.TryParse(url, out var ipAddress))
         {
-            var ipHostInfo = await Dns.GetHostEntryAsync(url, ct);
-            ipAddress = ipHostInfo.AddressList.First();
+            // 主机名解析失败（订阅里域名过期/被污染）是很常见的：这里当作 -1 返回，
+            // 不要往上抛异常，否则整行没有结果
+            try
+            {
+                var ipHostInfo = await Dns.GetHostEntryAsync(url, ct);
+                var first = ipHostInfo.AddressList.FirstOrDefault();
+                if (first is null)
+                {
+                    return responseTime;
+                }
+                ipAddress = first;
+            }
+            catch (OperationCanceledException) when (ct.IsCancellationRequested)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Logging.SaveLog(_tag, ex);
+                return responseTime;
+            }
         }
 
         IPEndPoint endPoint = new(ipAddress, port);
@@ -609,10 +676,10 @@ public class SpeedtestService(Config config, Func<SpeedTestResult, Task> updateF
 
         pageSize = Math.Max(pageSize, 1);
         var lst1 = lstSelected.Where(t => t.CoreType == ECoreType.Xray).ToList();
-        // mihomo 节点用 sing-box 内核测速（协议覆盖最接近）；整份 Clash 配置没有单节点信息，仍然跳过
+        // 其余内核（sing-box / mihomo / hysteria2 / tuic / naive …）统一放进 sing-box 的批量配置。
+        // 以前只收 sing-box 和 mihomo，其它类型的节点两个批次都不进，整组静默漏测、永远没有结果
         var lst2 = lstSelected
-            .Where(t => t.CoreType == ECoreType.sing_box
-                        || (t.CoreType == ECoreType.mihomo && t.ConfigType != EConfigType.Custom))
+            .Where(t => t.CoreType != ECoreType.Xray && t.ConfigType != EConfigType.Custom)
             .ToList();
 
         for (var num = 0; num < (int)Math.Ceiling(lst1.Count * 1.0 / pageSize); num++)

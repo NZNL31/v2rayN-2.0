@@ -17,7 +17,8 @@ public partial class ProfileItemModel : ReactiveObject
     [Reactive]
     public partial int Delay { get; set; }
 
-    public decimal Speed { get; set; }
+    [Reactive]
+    public partial decimal Speed { get; set; }
 
     [Reactive]
     public partial string DelayVal { get; set; }

@@ -290,6 +290,8 @@ public partial class ProfilesViewModel : MyReactiveObject
         {
             NoticeManager.Instance.SendMessageEx(result.Delay);
             NoticeManager.Instance.Enqueue(result.Delay);
+            // 一轮测完（「测试完成」）时刷新汇总，别再让工具栏的「已测 / 平均延迟」停在旧数字上
+            UpdateGroupSummary();
             return;
         }
         var item = ProfileItems.FirstOrDefault(it => it.IndexId == result.IndexId);
@@ -311,7 +313,25 @@ public partial class ProfilesViewModel : MyReactiveObject
         {
             item.IpInfo = result.IpInfo ?? string.Empty;
         }
+        RefreshGroupSummaryThrottled();
         await Task.CompletedTask;
+    }
+
+    private DateTime _lastSummaryRefresh = DateTime.MinValue;
+
+    /// <summary>
+    /// 测速过程中每个节点都会回调一次，2000+ 个节点逐个重算汇总太浪费，
+    /// 这里按 400ms 节流；一轮结束时 SetSpeedTestResult 会再强制刷一次。
+    /// </summary>
+    private void RefreshGroupSummaryThrottled()
+    {
+        var now = DateTime.UtcNow;
+        if ((now - _lastSummaryRefresh).TotalMilliseconds < 400)
+        {
+            return;
+        }
+        _lastSummaryRefresh = now;
+        UpdateGroupSummary();
     }
 
     public async Task UpdateStatistics(ServerSpeedItem update)

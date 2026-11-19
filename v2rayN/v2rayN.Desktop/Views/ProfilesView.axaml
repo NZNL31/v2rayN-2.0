@@ -451,6 +451,18 @@
                                         Foreground="{DynamicResource AppTextSecondary}"
                                         IsVisible="{Binding Delay, Converter={StaticResource PositiveToBool}}"
                                         Text="{Binding Path=DelayVal, Mode=OneWay}" />
+                                    <!--  没有有效结果（=0）：把「跳过测试 / 测速中…」这类状态写出来，别让这一格空着  -->
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        Foreground="{DynamicResource AppTextSecondary}"
+                                        IsVisible="{Binding Delay, Converter={StaticResource PositiveToBool}, ConverterParameter=Zero}"
+                                        Text="{Binding Path=DelayVal, Mode=OneWay}" />
+                                    <!--  测试失败（-1）：明确标出来，和「没测过（空白）」区分开  -->
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        Foreground="#C0564F"
+                                        IsVisible="{Binding Delay, Converter={StaticResource PositiveToBool}, ConverterParameter=Negative}"
+                                        Text="-1" />
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
